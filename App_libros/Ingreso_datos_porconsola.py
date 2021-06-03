@@ -87,7 +87,8 @@ def registro_clientes():
                 'movimiento': movimiento, 'fecha': fecha, 'nombre': nombre, 'apellido': apellido, 'id_number': id_number, 'contrasenia': contrasenia
             })
 
-        cliente(Nombre=nombre, Apellido=apellido, id_number=id_number, contrasenia=contrasenia)
+        cliente_nuevo = cliente(Nombre=nombre, Apellido=apellido, id_number=id_number, contrasenia=contrasenia)
+        cliente_nuevo.agregar_clientes()
 
     elif move == '2':
         movimiento = 'Baja'
@@ -103,12 +104,9 @@ def registro_clientes():
                 'movimiento': movimiento, 'fecha': fecha, 'nombre': '', 'apellido': '',
                 'id_number': id_number, 'contrasenia': contrasenia
             })
-        conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/App_libros/Applibros.db')
-        cursor = conexion.cursor()
-        sentencia1 = "DELETE FROM clientes WHERE id_number = " + "'" + id_number + "' and contrasenia = " + "'" + contrasenia + "'"
-        cursor.execute(sentencia1)
-        conexion.commit()
-        conexion.close()
+        cliente_nuevo = cliente(Nombre='', Apellido='', id_number=id_number, contrasenia=contrasenia)
+        cliente_nuevo.agregar_clientes()
+
 #
 #
 #
