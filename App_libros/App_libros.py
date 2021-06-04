@@ -11,13 +11,13 @@ class cliente:
 
     def agregar_clientes(self):
 
-        conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/App_libros/Applibros.db')
+        conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/Proyecto_final/App_libros/Applibros.db')
         cursor = conexion.cursor()
         sentencia = "SELECT * FROM clientes WHERE id_number = " + "'" + self.id_number + "'"
         cursor.execute(sentencia)
         cliente = cursor.fetchone()
         if cliente is None:
-            conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/App_libros/Applibros.db')
+            conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/Proyecto_final/App_libros/Applibros.db')
             cursor = conexion.cursor()
             m = (self.Nombre, self.Apellido, self.id_number, self.contrasenia)
             sentencia_sql = "INSERT INTO clientes VALUES (?, ?, ?, ?)"
@@ -26,7 +26,7 @@ class cliente:
             conexion.close()
 
     def eliminar_clientes(self):
-        conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/App_libros/Applibros.db')
+        conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/Proyecto_final/App_libros/Applibros.db')
         cursor = conexion.cursor()
         sentencia1 = "DELETE FROM clientes WHERE id_number = " + "'" + self.id_number + "' and contrasenia = " + "'" + self.contrasenia + "'"
         cursor.execute(sentencia1)
@@ -46,13 +46,13 @@ class libros:
         self.precio = precio
         self.id_number = id_number
     def agregar_libros(self):
-        conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/App_libros/Applibros.db')
+        conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/Proyecto_final/App_libros/Applibros.db')
         cursor = conexion.cursor()
         sentencia = "SELECT * FROM Libros WHERE id_number = " + "'" + self.id_number + "' and titulo_obra = " + "'" + self.titulo_obra + "'"
         cursor.execute(sentencia)
         Libro = cursor.fetchone()
         if Libro is None:
-            conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/App_libros/Applibros.db')
+            conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/Proyecto_final/App_libros/Applibros.db')
             cursor = conexion.cursor()
             x = (self.titulo_obra, self.genero, self.paginas, self.precio, self.id_number)
             sentencia_sql = "INSERT INTO clientes VALUES (?, ?, ?, ?, ?)"
@@ -64,9 +64,7 @@ class libros:
 
 
     def eliminar_libros(self):
-        self.id_number = str(id_number)
-        self.titulo_obra = titulo_obra
-        conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/App_libros/Applibros.db')
+        conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/Proyecto_final/App_libros/Applibros.db')
         cursor = conexion.cursor()
         sentencia = "DELETE FROM Libros WHERE id_number = " + "'" + self.id_number + "' and titulo_obra = " + "'" + self.titulo_obra + "'"
         cursor.execute(sentencia)
@@ -86,13 +84,13 @@ class libros_usados(libros):
         self.tiempo_de_uso = tiempo_de_uso
 
     def agregar_libros_usados(self):
-        conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/App_libros/Applibros.db')
+        conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/Proyecto_final/App_libros/Applibros.db')
         cursor = conexion.cursor()
         sentencia = "SELECT * FROM Libros_usados WHERE id_number = " + "'" + self.id_number + "' and titulo_obra = " + "'" + self.titulo_obra + "'"
         cursor.execute(sentencia)
         Libro = cursor.fetchone()
         if Libro is None:
-            conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/App_libros/Applibros.db')
+            conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/Proyecto_final/App_libros/Applibros.db')
             cursor = conexion.cursor()
             n = (self.titulo_obra, self.genero, self.paginas, self.precio, self.id_number, self.condicion, self.estado, self.tiempo_de_uso)
             sentencia_sql = "INSERT INTO clientes VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
@@ -102,7 +100,7 @@ class libros_usados(libros):
 
     def eliminar_libros(self):
 
-        conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/App_libros/Applibros.db')
+        conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/Proyecto_final/App_libros/Applibros.db')
         cursor = conexion.cursor()
         sentencia = "DELETE FROM Libros_usados WHERE id_number = " + "'" + self.id_number + "' and titulo_obra = " + "'" + self.titulo_obra + "'"
         cursor.execute(sentencia)

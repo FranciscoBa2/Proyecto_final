@@ -1,5 +1,9 @@
 from App_libros import libros, cliente, libros_usados
 import sqlite3
+import random
+
+
+
 def consulta_de_libros():
     print('Elija una de las siguientes opciones: ')
     print('1-Buscar libro')
@@ -8,55 +12,59 @@ def consulta_de_libros():
     print('perfecto!')
     while True:
         if consulta == '1':
-            print('Estas buscando algun libro en particular?')
+            print('¿Estas buscando algun libro en particular?')
             print('1 - si')
             print('2- no')
             respuesta = input('respuesta: ')
             if respuesta == '1':
                 titulo_obra = input('Nombre del libro: ')
-                conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/App_libros/Applibros.db')
+                conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/Proyecto_final/App_libros/Applibros.db')
                 cursor = conexion.cursor()
                 sentencia = "SELECT * FROM Libros WHERE titulo_obra = " + "'" + titulo_obra + "'"
                 cursor.execute(sentencia)
                 cliente = cursor.fetchone()
-                print(cliente)
                 if cliente is None:
-                    conexion = sqlite3.connect(
-                        'C:/Users/franc/PycharmProjects/Practicas fundamentos/App_libros/Applibros.db')
+                    conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/Proyecto_final/App_libros/Applibros.db')
                     cursor = conexion.cursor()
-                    sentencia = "SELECT * FROM Libros WHERE id_number = " + "'" + titulo_obra + "'"
+                    sentencia = "SELECT * FROM Libros_usados WHERE titulo_obra = " + "'" + titulo_obra + "'"
                     cursor.execute(sentencia)
                     cliente = cursor.fetchone()
+                if cliente is None:
+                    print('No encontramos el libro')
+                else:
                     print(cliente)
-                    if cliente is None:
-                        conexion = sqlite3.connect(
-                            'C:/Users/franc/PycharmProjects/Practicas fundamentos/App_libros/Applibros.db')
-                        cursor = conexion.cursor()
-                        sentencia = "SELECT * FROM titulo_obra WHERE id_number = " + "'" + titulo_obra + "'"
-                        cursor.execute(sentencia)
-                        cliente = cursor.fetchone()
-                        print(cliente)
-                        if cliente is None:
-                            print('No encontramos el libro')
                 break
+
+
+
             if respuesta == '2':
-                conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/App_libros/Applibros.db')
+                print('Elija una de las siguientes opciones.')
+                print('1- Lista de todos los libros diponibles')
+                print('2- Random')
+                consulta = input('Opcion a elegir: ')
+                x = []
+                conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/Proyecto_final/App_libros/Applibros.db')
                 cursor = conexion.cursor()
                 sentencia = "SELECT * FROM Libros"
                 cursor.execute(sentencia)
                 cliente = cursor.fetchall()
                 for n in cliente:
-                    print(n)
+                    x.append(n)
                 sentencia2 = "SELECT * FROM Libros_usados"
                 cursor.execute(sentencia2)
                 cliente = cursor.fetchall()
                 for n in cliente:
-                    print(n)
+                    x.append(n)
+                if consulta == '1':
+                    print(x)
+                if consulta == '2':
+                    print(random.choice(x))
+
                 break
             else:
                 print('elija un numero entre las opciones.')
 
-# consulta_de_libros()
+consulta_de_libros()
 
 #
 
@@ -96,7 +104,7 @@ def registro_clientes():
         id_number = input('id_number: ')
         contrasenia = input('contrasenia: ')
 
-        with open('C:/Users/franc/PycharmProjects/Practicas fundamentos/App_libros/app.libros.csv', 'a',
+        with open('C:/Users/franc/PycharmProjects/Practicas fundamentos/Proyecto_final/App_libros/app.libros.csv', 'a',
                   newline='\n') as archivo:
             campos = ['movimiento', 'fecha', 'nombre', 'apellido', 'id_number', 'contrasenia', 'libros']
             writer = csv.DictWriter(archivo, fieldnames=campos)
@@ -104,8 +112,8 @@ def registro_clientes():
                 'movimiento': movimiento, 'fecha': fecha, 'nombre': '', 'apellido': '',
                 'id_number': id_number, 'contrasenia': contrasenia
             })
-        cliente_nuevo = cliente(Nombre='', Apellido='', id_number=id_number, contrasenia=contrasenia)
-        cliente_nuevo.agregar_clientes()
+        cliente_a_eliminar = cliente(Nombre='', Apellido='', id_number=id_number, contrasenia=contrasenia)
+        cliente_a_eliminar.eliminar_clientes()
 
 #
 #
