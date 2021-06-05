@@ -1,11 +1,21 @@
-movimiento,fecha,nombre,apellido,id_number,contrasenia,libros
-incersion,58:55.0,francisco,bagli,876,op33,
-,,,,,,
-,,,,,,
-,,,,,,
-insercion,2021-05-30 01:21:08.720572,franc,bag,999,op33,
-Alta,2021-05-31 00:14:37.595092,emanuel,bark,321,ttt,
-Baja,2021-05-31 00:29:45.925657,,,84,444,
-Baja,2021-05-31 00:32:29.207978,,,84,444,
-Baja,2021-05-31 00:35:16.224211,,,84,444,
-Baja,2021-05-31 00:36:40.573963,,,84,444,
+movimiento,fecha,nombre,apellido,id_number,contrasenia
+incersion,58:55.0,francisco,bagli,,op33
+,,,,,
+,,,,,
+,,,,,
+insercion,21:08.7,franc,bag,,op33
+Alta,14:37.6,emanuel,bark,,ttt
+Baja,29:45.9,,,,444
+Baja,32:29.2,,,,444
+Baja,35:16.2,,,,444
+Baja,36:40.6,,,,444
+Modificacion,2021-06-04 22:34:39.997958,,,
+Modificacion,2021-06-04 22:37:31.544544,,,
+Modificacion,2021-06-04 22:38:56.620311,,,
+Modificacion,2021-06-04 22:40:07.205116,,,
+Modificacion,2021-06-04 22:44:29.692943,,,
+Modificacion,2021-06-04 23:11:48.439967,,,
+Modificacion,2021-06-04 23:12:46.961126,,,
+Modificacion,2021-06-04 23:13:37.186493,,,
+Modificacion,2021-06-04 23:19:45.763454,,,
+Modificacion,2021-06-04 23:20:34.633458,,,
