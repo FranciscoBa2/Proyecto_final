@@ -48,13 +48,10 @@ class libros:
     def agregar_libros(self):
         conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/Proyecto_final/App_libros/Applibros.db')
         cursor = conexion.cursor()
-        sentencia1 = "SELECT * FROM clientes WHERE id_number = '" + self.id_number + "'"
         sentencia2 = "SELECT * FROM Libros WHERE titulo_obra = '" + self.titulo_obra + "' and id_number = '" + self.id_number + "'"
-        cursor.execute(sentencia1)
-        id = cursor.fetchone()
         cursor.execute(sentencia2)
         Libro = cursor.fetchone()
-        if Libro is None and id is not None:
+        if Libro is None:
             conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/Proyecto_final/App_libros/Applibros.db')
             cursor = conexion.cursor()
             x = (self.titulo_obra, self.genero, self.paginas, self.precio, self.id_number)
@@ -89,13 +86,10 @@ class libros_usados(libros):
     def agregar_libros_usados(self):
         conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/Proyecto_final/App_libros/Applibros.db')
         cursor = conexion.cursor()
-        sentencia1 = "SELECT * FROM clientes WHERE id_number = '" + self.id_number + "'"
         sentencia2 = "SELECT * FROM Libros_usados WHERE id_number = " + "'" + self.id_number + "' and titulo_obra = " + "'" + self.titulo_obra + "'"
-        cursor.execute(sentencia1)
-        id = cursor.fetchone()
         cursor.execute(sentencia2)
         Libro = cursor.fetchone()
-        if Libro is None and id is not None:
+        if Libro is None:
             conexion = sqlite3.connect('C:/Users/franc/PycharmProjects/Practicas fundamentos/Proyecto_final/App_libros/Applibros.db')
             cursor = conexion.cursor()
             n = (self.titulo_obra, self.genero, self.paginas, self.precio, self.id_number, self.condicion, self.estado, self.tiempo_de_uso)
