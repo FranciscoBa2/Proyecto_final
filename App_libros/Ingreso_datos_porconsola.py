@@ -3,7 +3,6 @@ import sqlite3
 import random
 
 
-
 def consulta_de_libros():
     print('Elija una de las siguientes opciones: ')
     print('1-Buscar libro')
@@ -32,7 +31,10 @@ def consulta_de_libros():
                 if cliente is None:
                     print('No encontramos el libro')
                 else:
-                    print(cliente)
+                    try:
+                        print('Titulo de la obra:', cliente[0], '\nGenero:', cliente[1], '\nPaginas:', cliente[2], '\nprecio:', cliente[3], '\nid_number:', cliente[4], '\ncondicion:', cliente[5], '\nestado: ', cliente[6], '\ntiempo de uso: ', cliente[7])
+                    except:
+                        print('Titulo de la obra:', cliente[0], '\nGenero:', cliente[1], '\nPaginas:', cliente[2], '\nprecio:', cliente[3], '\nid_number:', cliente[4])
                 break
 
 
@@ -56,17 +58,24 @@ def consulta_de_libros():
                 for n in cliente:
                     x.append(n)
                 if consulta == '1':
-                    print(x)
-                if consulta == '2':
-                    print(random.choice(x))
+                    n = 0
+                    for cliente in x:
+                        n = n + 1
+                        try:
+                            print('Libro', n, ' = Titulo de la obra:', cliente[0], ', Genero:', cliente[1], ', Paginas:', cliente[2], ', precio:', cliente[3], ', id_number:', cliente[4], ', condicion:', cliente[5], ', estado: ', cliente[6], ', tiempo de uso: ', cliente[7])
+                        except:
+                            print('Libro', n, ' = Titulo de la obra:', cliente[0], ', Genero:', cliente[1], ', Paginas:', cliente[2], ', precio:', cliente[3], ', id_number:', cliente[4])
 
+                if consulta == '2':
+                    cliente = random.choice(x)
+                    try:
+                        print('Titulo de la obra:', cliente[0], '\nGenero:', cliente[1], '\nPaginas:', cliente[2], '\nprecio:', cliente[3], '\nid_number:', cliente[4], '\ncondicion:', cliente[5], '\nestado: ', cliente[6], '\ntiempo de uso: ', cliente[7])
+                    except:
+                        print('Titulo de la obra:', cliente[0], '\nGenero:', cliente[1], '\nPaginas:', cliente[2], '\nprecio:', cliente[3], '\nid_number:', cliente[4])
                 break
             else:
                 print('elija un numero entre las opciones.')
 
-consulta_de_libros()
-
-#
 
 
 
@@ -161,6 +170,20 @@ def registro_clientes():
                 })
             libro_u_agregar = libros_usados(titulo_obra=titulo_obra, genero=genero, paginas=paginas, precio=precio, id_number=id_number, condicion=condicion, estado=estado, tiempo_de_uso=tiempo_de_uso)
             libro_u_agregar.agregar_libros_usados()
-#
-#
-# cliente1 = registro_clientes()
+
+
+
+while True:
+
+    print('Seleccione uno o dos:')
+    print('1- Quiero conocer los libros')
+    print('2- quiero modificar mis libros, registrarme')
+    seleccion = input('seleccion:')
+    if seleccion == '1':
+        consulta_de_libros()
+        break
+    elif seleccion == '2':
+        registro_clientes()
+        break
+
+
