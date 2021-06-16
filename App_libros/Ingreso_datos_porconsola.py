@@ -2,11 +2,17 @@ from App_libros import Libros
 from App_libros import Cliente
 from App_libros import Libros_usados
 from App_libros import ruta_base_datos
+from Conexion_con_api import consulta_libros_nyt_fict
+from Conexion_con_api import consulta_libros_nyt_nonfict
+
 import sqlite3
 import random
 
 
-def consulta_de_libros():
+### para resover el tema de asignacion de id, se le asigna por dni. En el caso de los libros un numero aleatorio.
+
+
+def consulta_de_librox():
     print('Elija una de las siguientes opciones: ')
     print('1-Buscar libro')
     print('2- Busqueda de best-sellers NyT')
@@ -20,84 +26,88 @@ def consulta_de_libros():
             respuesta = input('respuesta: ')
             if respuesta == '1':
                 titulo_obra = input('Nombre del libro: ')
-                conexion = sqlite3.connect(ruta_base_datos)
-                cursor = conexion.cursor()
-                sentencia = "SELECT * FROM Libros WHERE titulo_obra " + "LIKE '%" + titulo_obra + "%'"
-                cursor.execute(sentencia)
-                cliente = cursor.fetchone()
-                conexion.close()
-                if cliente is None:
-                    conexion = sqlite3.connect(ruta_base_datos)
-                    cursor = conexion.cursor()
-                    sentencia = "SELECT * FROM Libros_usados WHERE titulo_obra " + "lIKE '%" + titulo_obra + "%'"
-                    cursor.execute(sentencia)
-                    cliente = cursor.fetchone()
-                    conexion.close()
-                try:
-                    print('Titulo de la obra:', cliente[0], '\nGenero:', cliente[1],
-                            '\nPaginas:', cliente[2], '\nprecio:', cliente[3], '\nid_number:', cliente[4],
-                            '\ncondicion:', cliente[5], '\nestado: ', cliente[6], '\ntiempo de uso: ', cliente[7])
+                instancia = Cliente(Nombre='', Apellido='', contrasenia='', dni='')
+                lista = instancia.consulta_libro(titulo_obra=titulo_obra)
+                if len(lista) > 0:
+                    for cliente in lista:
+                        try:
+                            print('Titulo de la obra:', cliente[0], '\nGenero:',
+                                  cliente[1], '\nPaginas:', cliente[2], '\nprecio:',
+                                  cliente[3], '\nid_number:', cliente[4], '\ncondicion:',
+                                  cliente[5], '\nestado: ', cliente[6], '\ntiempo de uso: ',
+                                  cliente[7])
+                        except IndexError:
+                            print('Titulo de la obra:', cliente[0], '\nGenero:',
+                                  cliente[1], '\nPaginas:', cliente[2], '\nprecio:',
+                                  cliente[3], '\nid_number:', cliente[4])
+                        except TypeError:
+                            continue
                     break
-                except IndexError:
-                    print('Titulo de la obra:', cliente[0], '\nGenero:', cliente[1],
-                        '\nPaginas:', cliente[2], '\nprecio:', cliente[3], '\nid_number:', cliente[4])
-                    break
-                except:
+                else:
                     print('No encontramos el libro')
-
+                    break
 
             if respuesta == '2':
                 print('Elija una de las siguientes opciones.')
                 print('1- Lista de todos los libros diponibles')
                 print('2- Random')
                 consulta = input('Opcion a elegir: ')
-                x = []
-                conexion = sqlite3.connect(ruta_base_datos)
-                cursor = conexion.cursor()
-                sentencia = "SELECT * FROM Libros"
-                cursor.execute(sentencia)
-                cliente = cursor.fetchall()
-                for n in cliente:
-                    x.append(n)
-                sentencia2 = "SELECT * FROM Libros_usados"
-                cursor.execute(sentencia2)
-                cliente = cursor.fetchall()
-                conexion.close()
-                for n in cliente:
-                    x.append(n)
+                instancia = Cliente(Nombre='', Apellido='', contrasenia='', dni='')
+                lista = instancia.consulta_de_libros()
                 if consulta == '1':
                     n = 0
-                    for cliente in x:
+                    for cliente in lista:
+                        cliente = cliente[0]
                         n = n + 1
                         try:
-                            print('Libro', n, ' = Titulo de la obra:', cliente[0], ', Genero:', cliente[1],
-                                  ', Paginas:', cliente[2], ', precio:', cliente[3], ', id_number:', cliente[4],
-                                  ', condicion:', cliente[5], ', estado: ', cliente[6], ', tiempo de uso: ', cliente[7])
-                        except:
-                            print('Libro', n, ' = Titulo de la obra:', cliente[0], ', Genero:', cliente[1],
-                                  ', Paginas:', cliente[2], ', precio:', cliente[3], ', id_number:', cliente[4])
+                            print('Libro', n, ' = Titulo de la obra:', cliente[0],
+                                  ', Genero:', cliente[1], ', Paginas:', cliente[2],
+                                  ', precio:', cliente[3], ', id_number:', cliente[4],
+                                  ', condicion:', cliente[5], ', estado: ', cliente[6],
+                                  ', tiempo de uso: ', cliente[7])
+                        except IndexError:
+                            print('Libro', n, ' = Titulo de la obra:', cliente[0],
+                                  ', Genero:', cliente[1], ', Paginas:', cliente[2],
+                                  ', precio:', cliente[3], ', id_number:', cliente[4])
+                        except Exception as e:
+                            continue
+                    break
 
                 if consulta == '2':
-                    cliente = random.choice(x)
+                    cliente = random.choice(lista[0])
                     try:
-                        print('Titulo de la obra:', cliente[0], '\nGenero:', cliente[1],
-                              '\nPaginas:', cliente[2], '\nprecio:', cliente[3], '\nid_number:', cliente[4],
-                              '\ncondicion:', cliente[5], '\nestado: ', cliente[6], '\ntiempo de uso: ', cliente[7])
+                        print('Titulo de la obra:', cliente[0], '\nGenero:',
+                              cliente[1], '\nPaginas:', cliente[2], '\nprecio:',
+                              cliente[3], '\nid_number:', cliente[4], '\ncondicion:',
+                              cliente[5], '\nestado: ', cliente[6], '\ntiempo de uso: ',
+                              cliente[7])
                     except:
-                        print('Titulo de la obra:', cliente[0], '\nGenero:', cliente[1],
-                              '\nPaginas:', cliente[2], '\nprecio:', cliente[3], '\nid_number:', cliente[4])
-                break
+                        print('Titulo de la obra:', cliente[0], '\nGenero:',
+                              cliente[1], '\nPaginas:', cliente[2], '\nprecio:',
+                              cliente[3], '\nid_number:', cliente[4])
+                    break
             else:
                 print('elija un numero entre las opciones.')
 
-
-
+        if consulta == '2':
+            print('Elija una de las siguientes opciones: ')
+            print('1- Ficcion')
+            print('2- Resto')
+            respuesta = input('Opcion a elegir: ')
+            if respuesta == '1':
+                consulta_libros_nyt_fict(url='https://api.nytimes.com/svc/'
+                                             'books/v3/lists/current/hardcover-fiction.json')
+                break
+            if respuesta == '2':
+                consulta_libros_nyt_nonfict(url='https://api.nytimes.com/svc/'
+                                                'books/v3/lists/current/paperback-nonfiction.json')
+                break
 
 from datetime import datetime
 
 import csv
 
-ruta_csv = 'C:/Users/franc/PycharmProjects/Practicas fundamentos/App_libros/app.libros.csv'
+ruta_csv = 'app.libros.csv'
 
 def registro_clientes():
     print('Elija una de las siguientes opciones:')
@@ -111,25 +121,26 @@ def registro_clientes():
         nombre = input('nombre: ')
         apellido = input('apellido: ')
         contrasenia = input('contrasenia: ')
-        id_number = input('id_number: ')
+        dni = input('Ingrese su dni:')
+
+        cliente_nuevo = Cliente(Nombre=nombre, Apellido=apellido, contrasenia=contrasenia, dni=dni)
+        cliente_nuevo.agregar_clientes()
 
         with open(ruta_csv, 'a', newline='\n') as archivo:
-            campos = ['movimiento', 'fecha', 'nombre', 'apellido', 'id_number', 'contrasenia', 'libros']
+            campos = ['movimiento', 'fecha', 'nombre', 'apellido',
+                      'id_number', 'contrasenia', 'libros']
             writer = csv.DictWriter(archivo, fieldnames=campos)
             writer.writerow({
                 'movimiento': movimiento, 'fecha': fecha, 'nombre': nombre,
-                'apellido': apellido, 'id_number': id_number, 'contrasenia': contrasenia
+                'apellido': apellido, 'id_number': cliente_nuevo.id_number,
+                'contrasenia': contrasenia
             })
-
-        cliente_nuevo = Cliente(Nombre=nombre, Apellido=apellido,
-                                id_number=id_number, contrasenia=contrasenia)
-        cliente_nuevo.agregar_clientes()
 
     elif move == '2':
         movimiento = 'Baja'
         fecha = datetime.now()
         contrasenia = input('contrasenia: ')
-        id_number = input('id_number: ')
+        dni = input('dni: ')
 
         with open(ruta_csv, 'a', newline='\n') as archivo:
             campos = ['movimiento', 'fecha', 'nombre', 'apellido', 'contrasenia']
@@ -138,7 +149,7 @@ def registro_clientes():
                 'movimiento': movimiento, 'fecha': fecha,
                 'nombre': '', 'apellido': '', 'contrasenia': contrasenia
             })
-        cliente_a_eliminar = Cliente(Nombre='', Apellido='', id_number=id_number, contrasenia=contrasenia)
+        cliente_a_eliminar = Cliente(Nombre='', Apellido='', contrasenia=contrasenia, dni=dni)
         cliente_a_eliminar.eliminar_clientes()
 
     elif move == '3':
@@ -149,23 +160,24 @@ def registro_clientes():
         if opcion == '1':
             movimiento = 'Modificacion'
             fecha = datetime.now()
-            id_number = input('id_number: ')
+            dni = input('dni: ')
             titulo_obra = input('titulo_obra: ')
             genero = input('contrasenia: ')
             paginas = input('paginas: ')
-            precio = input('precio: ')
+            precio = input('Precio: ')
+
+            libro_a_agregar = Libros(titulo_obra=titulo_obra, genero=genero, paginas=paginas,
+                                     precio=precio, id_number=dni)
+            libro_a_agregar.agregar_libros()
 
             with open(ruta_csv, 'a', newline='\n') as archivo:
 
-                campos = ['movimiento', 'fecha', 'nombre', 'apellido', 'contrasenia']
+                campos = ['movimiento', 'fecha', 'id_number', 'contrasenia']
                 writer = csv.DictWriter(archivo, fieldnames=campos)
                 writer.writerow({
                     'movimiento': movimiento, 'fecha': fecha,
-                    'nombre': '', 'apellido': '', 'contrasenia': ''
+                    'id_number': dni, 'contrasenia': ''
                 })
-            libro_a_agregar = Libros(titulo_obra=titulo_obra, genero=genero, paginas=paginas,
-                                     precio=precio, id_number=id_number)
-            libro_a_agregar.agregar_libros()
 
         if opcion == '2':
             movimiento = 'Modificacion'
@@ -173,7 +185,7 @@ def registro_clientes():
             id_number = input('id_number: ')
             titulo_obra = input('titulo_obra: ')
             genero = input('contrasenia: ')
-            paginas = input('id_number: ')
+            paginas = input('Paginas: ')
             precio = input('precio: ')
             condicion = input('condicion: ')
             estado = input('estado: ')
@@ -185,8 +197,9 @@ def registro_clientes():
                 writer.writerow({
                     'movimiento': movimiento, 'fecha': fecha, 'nombre': '', 'apellido': '', 'contrasenia': ''
                 })
-            libro_u_agregar = Libros_usados(titulo_obra=titulo_obra, genero=genero, paginas=paginas, precio=precio,
-                                            id_number=id_number, condicion=condicion, estado=estado, tiempo_de_uso=tiempo_de_uso)
+            libro_u_agregar = Libros_usados(titulo_obra=titulo_obra, genero=genero, paginas=paginas,
+                                            precio=precio, id_number=id_number, condicion=condicion,
+                                            estado=estado, tiempo_de_uso=tiempo_de_uso)
             libro_u_agregar.agregar_libros_usados()
 
 
@@ -212,13 +225,17 @@ def manejo_de_foro():
         titulo_obra = input('titulo_obra: ')
         conexion = sqlite3.connect(ruta_base_datos)
         cursor = conexion.cursor()
-        sentencia = "SELECT * FROM foro WHERE titulo_obra " + "LIKE '%" + titulo_obra + "%'"
+        sentencia = "SELECT * FROM Foro WHERE Titulo_obra " + "LIKE '%" + titulo_obra + "%'"
         cursor.execute(sentencia)
-        foro = cursor.fetchone()
+        foro = cursor.fetchall()
         conexion.close()
         try:
-            print('Titulo de la obra:', foro[0], '\nPuntaje', foro[1],
-                    '\nRecomendacion:', foro[2])
+            if len(foro) > 0:
+                for recomendacion in foro:
+                    print('Titulo de la obra:', recomendacion[0], '\nPuntaje', recomendacion[1],
+                            '\nRecomendacion:', recomendacion[2])
+            else:
+                print('No encontramos el libro')
         except:
             print('No encontramos el libro')
 
@@ -231,7 +248,7 @@ while True:
     print('3- quiero participar en el foro')
     seleccion = input('seleccion:')
     if seleccion == '1':
-        consulta_de_libros()
+        consulta_de_librox()
         break
     elif seleccion == '2':
         registro_clientes()
@@ -239,4 +256,5 @@ while True:
     elif seleccion == '3':
         manejo_de_foro()
         break
+
 
