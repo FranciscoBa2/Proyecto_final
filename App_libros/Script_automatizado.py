@@ -31,26 +31,18 @@ import sys
 
 
 import smtplib
-from email.message import EmailMessage
+from decouple import config
 
-
-def enviarmail(mensaje, receptor):
+def enviar_mail(mensaje, receptor):
     usuario = 'f.caprarulo@wellspring.edu.ar'
     contrasenia = 'capra123'
+    subject = 'Venta de libro'
+    mensaje = 'Subject: {}\n\n{}'.format(subject, mensaje)
     server = smtplib.SMTP('smtp.gmail.com:587')
     server.starttls()
     server.login(usuario, contrasenia)
 
-    em = EmailMessage()
-    em.set_content(mensaje)
-    em['To'] = receptor
-    em['From'] = usuario
-    em['Subject'] = 'Venta de libro'
+    server.sendmail(usuario, receptor, mensaje)
 
-    server.send_message(em)
     server.quit()
 
-
-def ejecutar_mail(mensaje, receptor):
-    if __name__ == '__main__':
-        enviarmail(mensaje=mensaje, receptor=receptor)
