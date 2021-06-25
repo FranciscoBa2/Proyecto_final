@@ -43,19 +43,22 @@ def productosget(dni):
     dta.append(data_libros_cliente)
     dta.append(data_libros_cliente2)
     libros_vendidos = []
+    libros_solicitados = []
     for n in data_libros_cliente:
         for i in data_ventas:
             if n[4] == i[1]:
                 libros_vendidos.append(n)
-    for n in data_libros_cliente2:
-        for i in data_ventas:
-            if n[5] == i[1]:
-                libros_vendidos.append(n)
-    libros_solicitados = []
-    for n in data_libros_cliente:
         for i in solicitudes:
             if n[4] == i[1]:
                 libros_solicitados.append(n)
+    for n in data_libros_cliente2:
+        for i in data_ventas:
+            if n[7] == i[1]:
+                libros_vendidos.append(n)
+        for i in solicitudes:
+            if n[7] == i[1]:
+                libros_solicitados.append(n)
+
     cliente = Arreglador(data_cliente)
     cliente = cliente.formato_dic_cliente()
     libros_cliente = Arreglador(dta)
