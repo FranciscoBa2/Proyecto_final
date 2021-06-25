@@ -51,5 +51,6 @@ def enviarmail(mensaje, receptor):
     server.quit()
 
 
+def ejecutar_mail(mensaje, receptor):
     if __name__ == '__main__':
-        enviarmail(mensaje, receptor)
+        enviarmail(mensaje=mensaje, receptor=receptor)
