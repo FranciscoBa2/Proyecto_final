@@ -9,8 +9,6 @@ from App_libros import registrar_csv
 import random
 
 
-
-
 def interaccion_libros():
     print('Elija una de las siguientes opciones: ')
     print('1-Buscar/comprar libro')
@@ -41,13 +39,17 @@ def interaccion_libros():
                     for i in list_format:
                         n = n + 1
                         print('\nLibro', n, i)
-
+                    if len(list_format) == 0:
+                        print('No hay ningun libro disponible por el momento')
+                        break
                     print('Quieres comprar alguno de estos libros?')
                     print('1- si')
                     print('2- no')
                     respuesta2 = input('Seleccion: ')
                     if respuesta2 == '1':
                         dni = input('Ingresa tu dni: ')
+                        nombre = input('Nombre: ')
+                        apellido = input('Apellido: ')
                         eleccion = input('Que libro queres?:   ')
                         print('1- Confirmar eleccion')
                         print('2- Cancelar')
@@ -64,15 +66,19 @@ def interaccion_libros():
                                                             dni='')
                                         instancia.comprar_libro(id_libro=atributos[7], precio=atributos[3], dni=dni)
                                         print('Compra satisfactoria de: ', atributos)
-                                    elif len(atributos) > 4:
+                                        registrar_csv(movimiento='compra', nombre=nombre, apellido=apellido,
+                                                      contrasenia='', dni=dni,
+                                                      alquiler='')
+                                    else:
                                         instancia = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='',
                                                             dni='')
                                         instancia.comprar_libro(id_libro=atributos[4], precio=atributos[3], dni=dni)
                                         print('Compra satisfactoria de: ', atributos)
+                                        registrar_csv(movimiento='compra', nombre=nombre, apellido=apellido,
+                                                      contrasenia='', dni=dni,
+                                                      alquiler='')
                                 except:
                                     continue
-                            registrar_csv(movimiento='compra', nombre='', apellido='', contrasenia='', dni=dni,
-                                          alquiler='')
                         break
 
                     # Si o quiere comprar le ofrcemos alquilar despues de que diga que no.
@@ -146,6 +152,9 @@ def interaccion_libros():
                     for i in lis:
                         n = n + 1
                         print('\nLibro', n, i)
+                    if len(lis) == 0:
+                        print('No hay ningun libro disponible por el momento')
+                        break
                     print('Quieres comprar alguno de estos libros?')
                     print('1- si')
                     print('2- no')
@@ -164,18 +173,19 @@ def interaccion_libros():
                             try:
                                 atributos = nueva_lista[int(eleccion) - 1]
                                 if len(atributos) > 8:
-                                    instancia = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='',
-                                                        dni=dni)
-                                    instancia.comprar_libro(id_libro=atributos[7], precio=atributos[3], dni=dni)
+                                    instancia1 = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='',
+                                                         dni='')
+                                    instancia1.comprar_libro(id_libro=atributos[7], precio=atributos[3], dni=dni)
                                     print('Compra satisfactoria de: ', atributos)
+                                    break
                                 else:
-                                    instancia = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='',
-                                                        dni=dni)
-                                    instancia.comprar_libro(id_libro=atributos[4], precio=atributos[3], dni=dni)
+                                    instancia2 = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='',
+                                                         dni='')
+                                    instancia2.comprar_libro(id_libro=atributos[4], precio=atributos[3], dni=dni)
                                     print('Compra satisfactoria de: ', atributos)
-                                break
-                            except:
-                                print('No se pudo realizar la compra')
+                                    break
+                            except Exception as e:
+                                print('No se pudo realizar la compra.','Tipo de error', e)
                                 break
                         break
                     if respuesta2 == '2':
@@ -240,6 +250,9 @@ def interaccion_libros():
                 if consulta == '2':
                     libro = Arreglador(listas)
                     libros = libro.formato_dic_libros(cantidad_de_listas=2)
+                    if len(libros) == 0:
+                        print('No hay ningun libro disponible por el momento')
+                        break
                     libro_elegido = random.choice(libros)
                     print('Libro random: ', libro_elegido)
                     print('Quieres comprar alguno de estos libros?')
@@ -266,8 +279,8 @@ def interaccion_libros():
                                 instancia.comprar_libro(id_libro=atributos[4], precio=atributos[3], dni=dni)
                                 print('Compra satisfactoria de: ', atributos)
                             break
-                        except:
-                            print('No se pudo realizar la compra')
+                        except Exception as e:
+                            print('No se pudo realizar la compra.','Tipo de error', e)
                             break
                     if respuestad == '2':
                         print('Quieres alquilar alguno de estos libros?')
@@ -345,7 +358,6 @@ def interaccion_libros():
                                                 'books/v3/lists/current/paperback-nonfiction.json')
                 break
         break
-from datetime import datetime
 
 
 
@@ -354,6 +366,8 @@ def registro_clientes():
     print('1- Alta cliente')
     print('2 - Baja cliente')
     print('3- ingreso de libros')
+    print('4- Eliminar mis libros')
+    print('5- Modificar mis datos')
     move = input('tipo de movimiento: ')
     if move == '1':
         nombre = input('nombre: ')
@@ -377,16 +391,15 @@ def registro_clientes():
         registrar_csv(movimiento='baja', nombre='', apellido='', contrasenia='', dni=dni, alquiler='')
 
         cliente_a_eliminar = Cliente(Nombre='', Apellido='', contrasenia=contrasenia, numero='', mail='', dni=dni)
-        cliente_a_eliminar.eliminar_clientes()
+        cliente_a_eliminar.desactivar_clientes()
+        print('Operacion exitosa')
 
     elif move == '3':
-        print('que tipo de libro deeas insertar?')
+        print('que tipo de libro deseas insertar?')
         print('1- nuevo')
         print('2- usado')
         opcion = input('opcion a elegir: ')
         if opcion == '1':
-            movimiento = 'Modificacion'
-            fecha = datetime.now()
             dni = input('dni: ')
             titulo_obra = input('titulo_obra: ')
             genero = input('genero: ')
@@ -394,15 +407,17 @@ def registro_clientes():
             precio = input('Precio: ')
             alquiler = input('Alquiler si/no: ')
 
+            registrar_csv(movimiento='agregar_libros', nombre='', apellido='', contrasenia='', dni=dni,
+                          alquiler=alquiler)
             libro_a_agregar = Libros(titulo_obra=titulo_obra, genero=genero, paginas=paginas,
                                      precio=precio, id_number=dni, alquiler=alquiler)
-            libro_a_agregar.agregar_libros()
+            n = libro_a_agregar.agregar_libros()
 
-            registrar_csv(movimiento='agregar_libros', nombre='', apellido='', contrasenia='', dni=dni, alquiler=alquiler)
-            print('Publicacion exitosa del libro:', titulo_obra)
+            if len(n) == 0:
+                print('Por favor registrese antes de agregar un libro')
+            else:
+                print('Publicacion exitosa del libro:', titulo_obra)
         if opcion == '2':
-            movimiento = 'Modificacion'
-            fecha = datetime.now()
             dni = input('Dni: ')
             titulo_obra = input('Titulo de la obra: ')
             genero = input('Genero: ')
@@ -417,10 +432,58 @@ def registro_clientes():
             libro_u_agregar = Libros_usados(titulo_obra=titulo_obra, genero=genero,
                                             paginas=paginas, precio=precio, id_number=dni,
                                             condicion=condicion, tiempo_de_uso=tiempo_de_uso, alquiler=Alquiler)
-            libro_u_agregar.agregar_libros_usados()
-            print('Publicacion exitosa del libro:', titulo_obra)
+            n = libro_u_agregar.agregar_libros_usados()
+            if len(n) == 0:
+                print('Por favor registrese antes de agregar un libro')
+            else:
+                print('Publicacion exitosa del libro:', titulo_obra)
+    elif move == '4':
+        dni = input('dni: ')
+        # para desactivar libros, le mostramos al cliente los que tiene publicados.
+        instancia = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='', dni='')
+        listas = instancia.consulta_de_libros()
+        lis = Arreglador(listas)
+        lis = lis.formato_dic_libros(cantidad_de_listas=2)
+        n = 0
+        for i in lis:
+            n = n + 1
+            print('\nLibro', n, i)
+        eleccion = input('Que libro querias eliminar?')
 
-
+        nueva_lista = []
+        for lista in listas:
+            for list in lista:
+                nueva_lista.append(list)
+        try:
+            atributos = nueva_lista[int(eleccion) - 1]
+            if len(atributos) > 8:
+                instancia1 = Libros_usados(titulo_obra='', genero='', paginas='', precio='', id_number='',
+                                           condicion='', tiempo_de_uso='', alquiler='')
+                instancia1.desactivar_libros(id_number_libro=atributos[7])
+                print('Operacion exitosa')
+            else:
+                instancia2 = Libros(titulo_obra='', genero='', paginas='', precio='', id_number='', alquiler='')
+                instancia2.desactivar_libros(id_number_libro=atributos[4])
+                registrar_csv(movimiento='baja', nombre='', apellido='', contrasenia='', dni=dni, alquiler='')
+                print('Operacion exitosa')
+        except Exception as e:
+            print('No se pudo realizar la operacion.', 'Tipo de error', e)
+    elif move == '5':
+        id = input('introduce tu dni:')
+        print('Cual de las siguientes opciones querias modificar? ')
+        print('1-Nombre')
+        print('2-Apellido')
+        print('3-Contrasenia')
+        print('4-Numero')
+        print('5-Mail')
+        columna = input('Eleccion: ')
+        dato = input('Escriba el nuevo valor de la columna seleccionada: ')
+        opciones_db = {'1': 'Nombre', '2': 'Apellido', '3': 'Contrasenia', '4': 'numero', '5': 'email'}
+        try:
+            modificar = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='', dni=id)
+            modificar.modificar_datos_cliente(columna=opciones_db[columna], dato=dato)
+        except Exception as e:
+            print('No se pudo modificar la columna seleccionada, verifique nuevamente sus datos.', e)
 def manejo_de_foro():
     print('Seleccione una accion')
     print('1- Crear recomendacion')
@@ -430,11 +493,13 @@ def manejo_de_foro():
         titulo_obra = input('Titulo de la obra: ')
         puntaje = input('Puntaje(1-10): ')
         recomendacion = input('Recomendacion: ')
-        nombre = input('nombre: ')
-        apellido = input('apellido: ')
-        registrar_csv(movimiento='creacion_recomendacion', nombre=nombre, apellido=apellido, contrasenia='', dni='', alquiler='')
+        nombre = input('Nombre: ')
+        apellido = input('Apellido: ')
+        registrar_csv(movimiento='creacion_recomendacion', nombre=nombre, apellido=apellido, contrasenia='',
+                      dni='', alquiler='')
         instancia = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='', dni='')
-        instancia.crear_recomendacion(titulo_obra=titulo_obra, puntaje=puntaje, recomendacion=recomendacion, nombre=nombre, apellido=apellido)
+        instancia.crear_recomendacion(titulo_obra=titulo_obra, puntaje=puntaje, recomendacion=recomendacion,
+                                      nombre=nombre, apellido=apellido)
         print('Gracias! Valoramos mucho tu opinion.')
 
     if opcion == '2':
@@ -454,7 +519,7 @@ def manejo_de_foro():
 
 
 while True:
-
+    print('Bienvenido a la aplicacion SwapBooks, estamos muy contentos de que seas parte de nuestra comunidad.')
     print('Seleccione una de las tres opciones:')
     print('1- Quiero conocer/comprar los libros.')
     print('2- Quiero modificar mis libros, registrarme, darme de baja.')
@@ -469,5 +534,4 @@ while True:
     elif seleccion == '3':
         manejo_de_foro()
         break
-
 
