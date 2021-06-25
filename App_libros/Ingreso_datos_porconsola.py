@@ -10,17 +10,20 @@ import random
 
 
 def interaccion_libros():
-    print('Elija una de las siguientes opciones: ')
-    print('1-Buscar/comprar libro')
-    print('2-Busqueda de best-sellers NyT')
-    consulta = input('Opcion a elegir: ')
-    print('perfecto!')
+    while True:
+        print('Elija una de las siguientes opciones: ')
+        print('1-Buscar/Comprar libro')
+        print('2-Busqueda de best-sellers NyT')
+        consulta = input('Opcion a elegir: ')
+        if consulta == '1' or consulta == '2':
+            break
+    print('Perfecto!')
     while True:
         if consulta == '1':
             print('¿Estas buscando algun libro en particular?')
-            print('1 - si')
-            print('2- no')
-            respuesta1 = input('respuesta: ')
+            print('1- Si')
+            print('2- No')
+            respuesta1 = input('Respuesta: ')
 
             # Libro particular
 
@@ -42,18 +45,18 @@ def interaccion_libros():
                     if len(list_format) == 0:
                         print('No hay ningun libro disponible por el momento')
                         break
-                    print('Quieres comprar alguno de estos libros?')
-                    print('1- si')
-                    print('2- no')
+                    print('¿Quieres comprar alguno de estos libros?')
+                    print('1- Si')
+                    print('2- No')
                     respuesta2 = input('Seleccion: ')
                     if respuesta2 == '1':
                         dni = input('Ingresa tu dni: ')
                         nombre = input('Nombre: ')
                         apellido = input('Apellido: ')
-                        eleccion = input('Que libro queres?:   ')
+                        eleccion = input('¿Que libro queres?:   ')
                         print('1- Confirmar eleccion')
                         print('2- Cancelar')
-                        seguro = input('Estas seguro? ')
+                        seguro = input('¿Estas seguro? ')
 
                         # Ejecucion de compra
 
@@ -65,7 +68,7 @@ def interaccion_libros():
                                         instancia = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='',
                                                             dni='')
                                         instancia.comprar_libro(id_libro=atributos[7], precio=atributos[3], dni=dni)
-                                        print('Compra satisfactoria de: ', atributos)
+                                        print('Compra satisfactoria de: ', atributos[0])
                                         registrar_csv(movimiento='compra', nombre=nombre, apellido=apellido,
                                                       contrasenia='', dni=dni,
                                                       alquiler='')
@@ -73,7 +76,7 @@ def interaccion_libros():
                                         instancia = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='',
                                                             dni='')
                                         instancia.comprar_libro(id_libro=atributos[4], precio=atributos[3], dni=dni)
-                                        print('Compra satisfactoria de: ', atributos)
+                                        print('Compra satisfactoria de: ', atributos[0])
                                         registrar_csv(movimiento='compra', nombre=nombre, apellido=apellido,
                                                       contrasenia='', dni=dni,
                                                       alquiler='')
@@ -84,7 +87,7 @@ def interaccion_libros():
                     # Si o quiere comprar le ofrcemos alquilar despues de que diga que no.
 
                     if respuesta2 == '2':
-                        print('Quieres alquilar alguno de estos libros?')
+                        print('¿Quieres alquilar alguno de estos libros?')
                         print('1- Si')
                         print('2- No')
                         alq = input('Respuesta: ')
@@ -94,10 +97,10 @@ def interaccion_libros():
                             numero = input('Numero telefonico: ')
                             mail = input('Mail: ')
                             dni = input('Dni: ')
-                            eleccion_a = input('Que libro queres?:   ')
+                            eleccion_a = input('¿Que libro queres?:   ')
                             print('1- Confirmar eleccion')
                             print('2- Cancelar')
-                            seguro = input('Estas seguro? ')
+                            seguro = input('¿Estas seguro? ')
                             if seguro == '1':
                                 for lista in listas:
                                     try:
@@ -115,9 +118,10 @@ def interaccion_libros():
                                                           alquiler='')
                                             break
                                         else:
-                                            instancia = Cliente(Nombre=nombre, Apellido=apellido, contrasenia='', numero=numero,
-                                                                mail=mail, dni=dni)
-                                            instancia.solicitud_prestamo(titulo_obra=atributos[0], id_libro=atributos[4],
+                                            instancia = Cliente(Nombre=nombre, Apellido=apellido, contrasenia='',
+                                                                numero=numero, mail=mail, dni=dni)
+                                            instancia.solicitud_prestamo(titulo_obra=atributos[0],
+                                                                         id_libro=atributos[4],
                                                                          nombre=nombre, apellido=apellido,
                                                                          telefono=numero, email=mail)
                                             print('Envio de solictud exitoso de: ', atributos)
@@ -136,10 +140,13 @@ def interaccion_libros():
             # Libros cualquiera
 
             if respuesta1 == '2':
-                print('Elija una de las siguientes opciones.')
-                print('1- Lista de todos los libros diponibles')
-                print('2- Random')
-                consulta = input('Opcion a elegir: ')
+                while True:
+                    print('Elija una de las siguientes opciones.')
+                    print('1- Lista de todos los libros diponibles')
+                    print('2- Libro aleatorio')
+                    consulta = input('Opcion a elegir: ')
+                    if consulta == '1' or consulta == '2':
+                        break
                 instancia = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='', dni='')
                 listas = instancia.consulta_de_libros()
 
@@ -155,16 +162,19 @@ def interaccion_libros():
                     if len(lis) == 0:
                         print('No hay ningun libro disponible por el momento')
                         break
-                    print('Quieres comprar alguno de estos libros?')
-                    print('1- si')
-                    print('2- no')
-                    respuesta2 = input('Seleccion: ')
+                    while True:
+                        print('¿Quieres comprar alguno de estos libros?')
+                        print('1- si')
+                        print('2- no')
+                        respuesta2 = input('Seleccion: ')
+                        if respuesta2 == '1' or respuesta2 == '2':
+                            break
                     if respuesta2 == '1':
                         dni = input('Ingresa tu dni: ')
                         eleccion = input('Que libro queres?:   ')
                         print('1- Confirmar eleccion')
                         print('2- Cancelar')
-                        seguro = input('Estas seguro? ')
+                        seguro = input('¿Estas seguro? ')
                         if seguro == '1':
                             nueva_lista = []
                             for lista in listas:
@@ -176,20 +186,20 @@ def interaccion_libros():
                                     instancia1 = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='',
                                                          dni='')
                                     instancia1.comprar_libro(id_libro=atributos[7], precio=atributos[3], dni=dni)
-                                    print('Compra satisfactoria de: ', atributos)
+                                    print('Compra satisfactoria de: ', atributos[0])
                                     break
                                 else:
                                     instancia2 = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='',
                                                          dni='')
                                     instancia2.comprar_libro(id_libro=atributos[4], precio=atributos[3], dni=dni)
-                                    print('Compra satisfactoria de: ', atributos)
+                                    print('Compra satisfactoria de: ', atributos[0])
                                     break
                             except Exception as e:
-                                print('No se pudo realizar la compra.','Tipo de error', e)
+                                print('No se pudo realizar la compra.', 'Tipo de error', e)
                                 break
                         break
                     if respuesta2 == '2':
-                        print('Quieres alquilar alguno de estos libros?')
+                        print('¿Quieres alquilar alguno de estos libros?')
                         print('1- Si')
                         print('2- No')
                         alq = input('Respuesta: ')
@@ -199,10 +209,10 @@ def interaccion_libros():
                             numero = input('Numero telefonico: ')
                             mail = input('Mail: ')
                             dni = input('Dni: ')
-                            eleccion_a = input('Que libro queres?:   ')
+                            eleccion_a = input('¿Que libro queres?:   ')
                             print('1- Confirmar eleccion')
                             print('2- Cancelar')
-                            seguro = input('Estas seguro? ')
+                            seguro = input('¿Estas seguro? ')
                             if seguro == '1':
                                 nueva_lista = []
                                 for lista in listas:
@@ -222,7 +232,7 @@ def interaccion_libros():
                                                                      apellido=apellido,
                                                                      telefono=numero,
                                                                      email=mail)
-                                        print('Envio de solictud exitoso de: ', atributos)
+                                        print('Envio de solictud exitoso de: ', atributos[0])
                                         registrar_csv(movimiento='solicitud', nombre='', apellido='', contrasenia='',
                                                       dni=dni,
                                                       alquiler='')
@@ -238,7 +248,7 @@ def interaccion_libros():
                                                                      apellido=apellido,
                                                                      telefono=numero,
                                                                      email=mail)
-                                        print('Envio de solictud exitoso de: ', atributos)
+                                        print('Envio de solictud exitoso de: ', atributos[0])
                                         registrar_csv(movimiento='solicitud', nombre='', apellido='', contrasenia='',
                                                       dni=dni,
                                                       alquiler='')
@@ -255,7 +265,7 @@ def interaccion_libros():
                         break
                     libro_elegido = random.choice(libros)
                     print('Libro random: ', libro_elegido)
-                    print('Quieres comprar alguno de estos libros?')
+                    print('¿Quieres comprar alguno de estos libros?')
                     print('1- si')
                     print('2- no')
                     respuestad = input('Seleccion: ')
@@ -272,18 +282,18 @@ def interaccion_libros():
                                 instancia = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='',
                                                     dni=dni)
                                 instancia.comprar_libro(id_libro=atributos[7], precio=atributos[3], dni=dni)
-                                print('Compra satisfactoria de: ', atributos)
+                                print('Compra satisfactoria de: ', atributos[0])
                             else:
                                 instancia = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='',
                                                     dni=dni)
                                 instancia.comprar_libro(id_libro=atributos[4], precio=atributos[3], dni=dni)
-                                print('Compra satisfactoria de: ', atributos)
+                                print('Compra satisfactoria de: ', atributos[0])
                             break
                         except Exception as e:
                             print('No se pudo realizar la compra.','Tipo de error', e)
                             break
                     if respuestad == '2':
-                        print('Quieres alquilar alguno de estos libros?')
+                        print('¿Quieres alquilar alguno de estos libros?')
                         print('1- Si')
                         print('2- No')
                         alq = input('Respuesta: ')
@@ -295,7 +305,7 @@ def interaccion_libros():
                             dni = input('Dni: ')
                             print('1- Confirmar eleccion')
                             print('2- Cancelar')
-                            seguro = input('Estas seguro? ')
+                            seguro = input('¿Estas seguro? ')
                             if seguro == '1':
                                 nueva_lista = []
                                 for lista in listas:
@@ -315,7 +325,7 @@ def interaccion_libros():
                                                                      apellido=apellido,
                                                                      telefono=numero,
                                                                      email=mail)
-                                        print('Envio de solictud exitoso de: ', atributos)
+                                        print('Envio de solictud exitoso de: ', atributos[0])
                                         registrar_csv(movimiento='solicitud', nombre='', apellido='', contrasenia='',
                                                       dni=dni,
                                                       alquiler='')
@@ -331,7 +341,7 @@ def interaccion_libros():
                                                                      apellido=apellido,
                                                                      telefono=numero,
                                                                      email=mail)
-                                        print('Envio de solictud exitoso de: ', atributos)
+                                        print('Envio de solictud exitoso de: ', atributos[0])
                                         registrar_csv(movimiento='solicitud', nombre='', apellido='', contrasenia='',
                                                       dni=dni,
                                                       alquiler='')
@@ -340,14 +350,14 @@ def interaccion_libros():
                                     continue
                     break
                 else:
-                    print('elija un numero entre las opciones.')
+                    print('Elija un numero entre las opciones.')
                 break
             break
 
         if consulta == '2':
             print('Elija una de las siguientes opciones: ')
             print('1- Ficcion')
-            print('2- Resto')
+            print('2- No ficcion')
             respuesta = input('Opcion a elegir: ')
             if respuesta == '1':
                 consulta_libros_nyt_fict(url='https://api.nytimes.com/svc/'
@@ -362,17 +372,20 @@ def interaccion_libros():
 
 
 def registro_clientes():
-    print('Elija una de las siguientes opciones:')
-    print('1- Alta cliente')
-    print('2 - Baja cliente')
-    print('3- ingreso de libros')
-    print('4- Eliminar mis libros')
-    print('5- Modificar mis datos')
-    move = input('tipo de movimiento: ')
+    while True:
+        print('Elija una de las siguientes opciones:')
+        print('1- Alta cliente')
+        print('2- Baja cliente')
+        print('3- Ingreso de libros')
+        print('4- Eliminar mis libros')
+        print('5- Modificar mis datos')
+        move = input('Tipo de movimiento: ')
+        if move == '1' or move == '2' or move == '3' or move == '4' or move == '5':
+            break
     if move == '1':
-        nombre = input('nombre: ')
-        apellido = input('apellido: ')
-        contrasenia = input('contrasenia: ')
+        nombre = input('Nombre: ')
+        apellido = input('Apellido: ')
+        contrasenia = input('Contraseña: ')
         dni = input('Ingrese su dni:')
         numero = input('Ingrese su numero: ')
         mail = input('Ingrese su mail: ')
@@ -385,8 +398,8 @@ def registro_clientes():
                       dni=dni, alquiler='')
 
     elif move == '2':
-        contrasenia = input('contrasenia: ')
-        dni = input('dni: ')
+        contrasenia = input('Contraseña: ')
+        dni = input('Dni: ')
 
         registrar_csv(movimiento='baja', nombre='', apellido='', contrasenia='', dni=dni, alquiler='')
 
@@ -395,17 +408,17 @@ def registro_clientes():
         print('Operacion exitosa')
 
     elif move == '3':
-        print('que tipo de libro deseas insertar?')
-        print('1- nuevo')
-        print('2- usado')
-        opcion = input('opcion a elegir: ')
+        print('¿Que tipo de libro deseas insertar?')
+        print('1- Nuevo')
+        print('2- Usado')
+        opcion = input('Opcion a elegir: ')
         if opcion == '1':
-            dni = input('dni: ')
-            titulo_obra = input('titulo_obra: ')
-            genero = input('genero: ')
-            paginas = input('paginas: ')
+            dni = input('Dni: ')
+            titulo_obra = input('Titulo de la obra: ')
+            genero = input('Genero: ')
+            paginas = input('Paginas: ')
             precio = input('Precio: ')
-            alquiler = input('Alquiler si/no: ')
+            alquiler = input('¿Quieres alquilarlo? (si/no): ')
 
             registrar_csv(movimiento='agregar_libros', nombre='', apellido='', contrasenia='', dni=dni,
                           alquiler=alquiler)
@@ -424,8 +437,8 @@ def registro_clientes():
             paginas = input('Paginas: ')
             precio = input('Precio: ')
             condicion = input('Condicion: ')
-            tiempo_de_uso = input('tiempo_de_uso: ')
-            Alquiler = input('Alquiler si/no: ')
+            tiempo_de_uso = input('Tiempo de uso: ')
+            Alquiler = input('¿Quieres alquilarlo? (si/no): ')
 
             registrar_csv(movimiento='agregar_libros', nombre='', apellido='', contrasenia='', dni=dni, alquiler='')
 
@@ -438,7 +451,7 @@ def registro_clientes():
             else:
                 print('Publicacion exitosa del libro:', titulo_obra)
     elif move == '4':
-        dni = input('dni: ')
+        dni = input('Dni: ')
         # para desactivar libros, le mostramos al cliente los que tiene publicados.
         instancia = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='', dni='')
         listas = instancia.consulta_de_libros()
@@ -448,7 +461,7 @@ def registro_clientes():
         for i in lis:
             n = n + 1
             print('\nLibro', n, i)
-        eleccion = input('Que libro querias eliminar?')
+        eleccion = input('¿Que libro querias eliminar?')
 
         nueva_lista = []
         for lista in listas:
@@ -469,13 +482,13 @@ def registro_clientes():
         except Exception as e:
             print('No se pudo realizar la operacion.', 'Tipo de error', e)
     elif move == '5':
-        id = input('introduce tu dni:')
+        id = input('Introduce tu dni:')
         print('Cual de las siguientes opciones querias modificar? ')
-        print('1-Nombre')
-        print('2-Apellido')
-        print('3-Contrasenia')
-        print('4-Numero')
-        print('5-Mail')
+        print('1- Nombre')
+        print('2- Apellido')
+        print('3- Contrasenia')
+        print('4- Numero')
+        print('5- Mail')
         columna = input('Eleccion: ')
         dato = input('Escriba el nuevo valor de la columna seleccionada: ')
         opciones_db = {'1': 'Nombre', '2': 'Apellido', '3': 'Contrasenia', '4': 'numero', '5': 'email'}
@@ -510,8 +523,8 @@ def manejo_de_foro():
             if len(foro) > 0:
                 for recomendacion in foro:
                     print('Titulo de la obra:', recomendacion[1], '\nPuntaje', recomendacion[2],
-                            '\nRecomendacion:', recomendacion[3], '\nNombre', recomendacion[4],
-                          '\nApellido', recomendacion[5])
+                            '\nRecomendacion:', recomendacion[3], '\nNombre del usuario que escribio la recomendacion:',
+                          recomendacion[4], '\nSu apellido:', recomendacion[5])
             else:
                 print('No encontramos una recomendacion del libro seleccionado')
         except:
@@ -522,9 +535,9 @@ while True:
     print('Bienvenido a la aplicacion SwapBooks, estamos muy contentos de que seas parte de nuestra comunidad.')
     print('Seleccione una de las tres opciones:')
     print('1- Quiero conocer/comprar los libros.')
-    print('2- Quiero modificar mis libros, registrarme, darme de baja.')
+    print('2- Quiero modificar mis libros, registrarme o darme de baja.')
     print('3- Quiero dar/buscar una reseña de un libro.')
-    seleccion = input('seleccion:')
+    seleccion = input('Seleccion:')
     if seleccion == '1':
         interaccion_libros()
         break
