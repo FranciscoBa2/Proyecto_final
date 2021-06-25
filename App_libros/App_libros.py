@@ -2,7 +2,7 @@ import sqlite3
 from datetime import datetime
 import random
 import csv
-from Script_automatizado import ejecutar_mail
+from Script_automatizado import enviar_mail
 
 ruta_base_datos = 'Applibros.db'
 
@@ -110,7 +110,6 @@ class Cliente:
 
     def comprar_libro(self, id_libro, precio, dni):
 
-        #repasar lo del mail
         self.id_libro = str(id_libro)
         self.dni = dni
         self.precio = precio
@@ -128,7 +127,7 @@ class Cliente:
         resultado2 = conexion_ejecucion_sentencia(sentencia="SELECT * FROM Libros_usados WHERE Id_number_libros = '" +
                                                             self.id_libro + "'",
                                                   tipo_ejecucion='simple')
-        id_cliente = None
+        id_cliente = 0
         if len(resultado) != 0:
             id_cliente = resultado[0]
             id_cliente = id_cliente[5]
@@ -139,8 +138,9 @@ class Cliente:
                                                         str(id_cliente) + "'", tipo_ejecucion='simple')
         mail = client[0]
         email = mail[5]
-        mensaje = "Buenos dias, nos comunicamos para informarte que vendiste tu libro {}".format(self.id_libro)
-        ejecutar_mail(mensaje=mensaje, receptor=email)
+        mensaje = "<POR FAVOR NO CONTESTAR ESTE CORREO>\n\nBuenos dias, nos comunicamos para informarte que vendiste" \
+                  " tu libro con id: {}".format(self.id_libro)
+        enviar_mail(mensaje=mensaje, receptor=email)
 
     def crear_recomendacion(self, titulo_obra, puntaje, recomendacion, nombre, apellido):
         self.titulo_obra = titulo_obra
