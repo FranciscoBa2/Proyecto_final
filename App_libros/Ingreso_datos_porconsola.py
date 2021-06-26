@@ -18,47 +18,55 @@ def interaccion_libros():
         if consulta == '1' or consulta == '2':
             break
     print('Perfecto!')
-    while True:
-        if consulta == '1':
+    if consulta == '1':
+        while True:
             print('¿Estas buscando algun libro en particular?')
             print('1- Si')
             print('2- No')
             respuesta1 = input('Respuesta: ')
+            if respuesta1 == '1' or respuesta1 == '2':
+                break
 
-            # Libro particular
+        # Libro particular
 
-            if respuesta1 == '1':
-                titulo_obra = input('Nombre del libro: ')
-                instancia = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='', dni='')
-                listas = instancia.consulta_libro(titulo_obra=titulo_obra)
-                lista_nueva = []
-                for n in listas:
-                    if len(n) > 0:
-                        lista_nueva.append(n)
-                if len(lista_nueva) > 0:
-                    list_format = Arreglador(lista_nueva)
-                    list_format = list_format.formato_dic_libros(cantidad_de_listas=0)
-                    n = 0
-                    for i in list_format:
-                        n = n + 1
-                        print('\nLibro', n, i)
-                    if len(list_format) == 0:
-                        print('No hay ningun libro disponible por el momento')
-                        break
-                    print('¿Quieres comprar alguno de estos libros?')
-                    print('1- Si')
-                    print('2- No')
-                    respuesta2 = input('Seleccion: ')
+        if respuesta1 == '1':
+            titulo_obra = input('Nombre del libro: ')
+            instancia = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='', dni='')
+            listas = instancia.consulta_libro(titulo_obra=titulo_obra)
+            lista_nueva = []
+            for n in listas:
+                if len(n) > 0:
+                    lista_nueva.append(n)
+            if len(lista_nueva) > 0:
+                list_format = Arreglador(lista_nueva)
+                list_format = list_format.formato_dic_libros(cantidad_de_listas=0)
+                n = 0
+                for i in list_format:
+                    n = n + 1
+                    print('\nLibro', n, i)
+                if len(list_format) == 0:
+                    print('No encontramos el libro')
+                else:
+                    while True:
+                        print('¿Quieres comprar alguno de estos libros?')
+                        print('1- Si')
+                        print('2- No')
+                        respuesta2 = input('Seleccion: ')
+                        if respuesta2 == '1' or respuesta2 == '2':
+                            break
                     if respuesta2 == '1':
                         dni = input('Ingresa tu dni: ')
                         nombre = input('Nombre: ')
                         apellido = input('Apellido: ')
                         eleccion = input('¿Que libro queres?:   ')
-                        print('1- Confirmar eleccion')
-                        print('2- Cancelar')
-                        seguro = input('¿Estas seguro? ')
+                        while True:
+                            print('1- Confirmar eleccion')
+                            print('2- Cancelar')
+                            seguro = input('¿Estas seguro? ')
+                            if seguro == '1' or seguro == '2':
+                                break
 
-                        # Ejecucion de compra
+                    # Ejecucion de compra
 
                         if seguro == '1':
                             for lista in listas:
@@ -66,31 +74,43 @@ def interaccion_libros():
                                     atributos = lista[int(eleccion) - 1]
                                     if len(atributos) > 8:
                                         instancia = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='',
-                                                            dni='')
-                                        instancia.comprar_libro(id_libro=atributos[7], precio=atributos[3], dni=dni)
-                                        print('Compra satisfactoria de: ', atributos[0])
-                                        registrar_csv(movimiento='compra', nombre=nombre, apellido=apellido,
+                                                        dni='')
+                                        n = instancia.comprar_libro(id_libro=atributos[7], precio=atributos[3], dni=dni)
+                                        if len(n) == 0:
+                                            print('Por favor registrese antes de agregar un libro o verifique que'
+                                              ' haya escrito bien su dni.')
+                                        else:
+                                            print('Compra satisfactoria de: ', atributos[0])
+                                            registrar_csv(movimiento='compra', nombre=nombre, apellido=apellido,
                                                       contrasenia='', dni=dni,
                                                       alquiler='')
+                                            break
                                     else:
                                         instancia = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='',
-                                                            dni='')
-                                        instancia.comprar_libro(id_libro=atributos[4], precio=atributos[3], dni=dni)
-                                        print('Compra satisfactoria de: ', atributos[0])
-                                        registrar_csv(movimiento='compra', nombre=nombre, apellido=apellido,
+                                                        dni='')
+                                        n = instancia.comprar_libro(id_libro=atributos[4], precio=atributos[3], dni=dni)
+                                        if len(n) == 0:
+                                            print('Por favor registrese antes de agregar un libro o verifique que'
+                                              ' haya escrito bien su dni.')
+                                        else:
+                                            print('Compra satisfactoria de: ', atributos[0])
+                                            registrar_csv(movimiento='compra', nombre=nombre, apellido=apellido,
                                                       contrasenia='', dni=dni,
                                                       alquiler='')
+                                            break
                                 except:
                                     continue
-                        break
 
-                    # Si o quiere comprar le ofrcemos alquilar despues de que diga que no.
+                # Si o quiere comprar le ofrcemos alquilar despues de que diga que no.
 
                     if respuesta2 == '2':
-                        print('¿Quieres alquilar alguno de estos libros?')
-                        print('1- Si')
-                        print('2- No')
-                        alq = input('Respuesta: ')
+                        while True:
+                            print('¿Quieres alquilar alguno de estos libros?')
+                            print('1- Si')
+                            print('2- No')
+                            alq = input('Respuesta: ')
+                            if alq == '1' or alq == '2':
+                                break
                         if alq == '1':
                             nombre = input('Nombre: ')
                             apellido = input('Apellido: ')
@@ -98,70 +118,79 @@ def interaccion_libros():
                             mail = input('Mail: ')
                             dni = input('Dni: ')
                             eleccion_a = input('¿Que libro queres?:   ')
-                            print('1- Confirmar eleccion')
-                            print('2- Cancelar')
-                            seguro = input('¿Estas seguro? ')
+                            while True:
+                                print('1- Confirmar eleccion')
+                                print('2- Cancelar')
+                                seguro = input('¿Estas seguro? ')
+                                if seguro == '1' or seguro == '2':
+                                    break
                             if seguro == '1':
                                 for lista in listas:
                                     try:
                                         atributos = lista[int(eleccion_a) - 1]
                                         if len(atributos) > 8:
-                                            instancia = Cliente(Nombre=nombre, Apellido=apellido, contrasenia='', numero=numero,
-                                                                mail=mail,
-                                                                dni=dni)
-                                            instancia.solicitud_prestamo(titulo_obra=atributos[0], id_libro=atributos[7],
+                                            instancia = Cliente(Nombre=nombre, Apellido=apellido, contrasenia='',
+                                                            numero=numero,
+                                                            mail=mail,
+                                                            dni=dni)
+                                            n = instancia.solicitud_prestamo(titulo_obra=atributos[0],
+                                                                         id_libro=atributos[7],
                                                                          nombre=nombre, apellido=apellido,
                                                                          telefono=numero, email=mail)
-                                            print('Envio de solictud exitoso de: ', atributos)
-                                            registrar_csv(movimiento='compra', nombre='', apellido='', contrasenia='',
-                                                          dni=dni,
-                                                          alquiler='')
-                                            break
+                                            if len(n) == 0:
+                                                print('Por favor registrese antes de agregar un libro o verifique que'
+                                                  ' haya escrito bien su dni.')
+                                            else:
+                                                print('Envio de solictud exitoso de: ', atributos[0],
+                                                  '. Se le brindara su contacto al dueño del libro para'
+                                                  ' que se contacte con usted.')
+                                                registrar_csv(movimiento='compra', nombre='', apellido='',
+                                                          contrasenia='', dni=dni, alquiler='')
+                                                break
                                         else:
                                             instancia = Cliente(Nombre=nombre, Apellido=apellido, contrasenia='',
-                                                                numero=numero, mail=mail, dni=dni)
-                                            instancia.solicitud_prestamo(titulo_obra=atributos[0],
+                                                            numero=numero, mail=mail, dni=dni)
+                                            n = instancia.solicitud_prestamo(titulo_obra=atributos[0],
                                                                          id_libro=atributos[4],
                                                                          nombre=nombre, apellido=apellido,
                                                                          telefono=numero, email=mail)
-                                            print('Envio de solictud exitoso de: ', atributos)
-                                            registrar_csv(movimiento='compra', nombre='', apellido='', contrasenia='',
+                                            if len(n) == 0:
+                                                print('Por favor registrese antes de agregar un libro o verifique que'
+                                                  ' haya escrito bien su dni.')
+                                            else:
+                                                print('Envio de solictud exitoso de: ', atributos)
+                                                registrar_csv(movimiento='compra', nombre='', apellido='',
+                                                          contrasenia='',
                                                           dni=dni, alquiler='')
-                                            break
+                                                break
                                     except:
                                         continue
-                            break
-                        break
-                else:
-                    print('No encontramos el libro')
+
+        # Libros cualquiera
+
+        if respuesta1 == '2':
+            while True:
+                print('Elija una de las siguientes opciones.')
+                print('1- Lista de todos los libros diponibles')
+                print('2- Libro aleatorio')
+                consulta = input('Opcion a elegir: ')
+                if consulta == '1' or consulta == '2':
                     break
-                break
+            instancia = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='', dni='')
+            listas = instancia.consulta_de_libros()
 
-            # Libros cualquiera
+            # Todos los  libros disponibles
 
-            if respuesta1 == '2':
-                while True:
-                    print('Elija una de las siguientes opciones.')
-                    print('1- Lista de todos los libros diponibles')
-                    print('2- Libro aleatorio')
-                    consulta = input('Opcion a elegir: ')
-                    if consulta == '1' or consulta == '2':
-                        break
-                instancia = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='', dni='')
-                listas = instancia.consulta_de_libros()
-
-                # Todos los  libros disponibles
-
-                if consulta == '1':
-                    lis = Arreglador(listas)
-                    lis = lis.formato_dic_libros(cantidad_de_listas=2)
-                    n = 0
-                    for i in lis:
-                        n = n + 1
-                        print('\nLibro', n, i)
-                    if len(lis) == 0:
-                        print('No hay ningun libro disponible por el momento')
-                        break
+            if consulta == '1':
+                lis = Arreglador(listas)
+                lis = lis.formato_dic_libros(cantidad_de_listas=2)
+                n = 0
+                for i in lis:
+                    n = n + 1
+                    print('\nLibro', n, i)
+                if len(lis) == 0:
+                    print('No hay ningun libro disponible por el momento')
+                else:
                     while True:
                         print('¿Quieres comprar alguno de estos libros?')
                         print('1- si')
@@ -172,9 +201,12 @@ def interaccion_libros():
                     if respuesta2 == '1':
                         dni = input('Ingresa tu dni: ')
                         eleccion = input('Que libro queres?:   ')
-                        print('1- Confirmar eleccion')
-                        print('2- Cancelar')
-                        seguro = input('¿Estas seguro? ')
+                        while True:
+                            print('1- Confirmar eleccion')
+                            print('2- Cancelar')
+                            seguro = input('¿Estas seguro? ')
+                            if seguro == '1' or seguro == '2':
+                                break
                         if seguro == '1':
                             nueva_lista = []
                             for lista in listas:
@@ -185,34 +217,44 @@ def interaccion_libros():
                                 if len(atributos) > 8:
                                     instancia1 = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='',
                                                          dni='')
-                                    instancia1.comprar_libro(id_libro=atributos[7], precio=atributos[3], dni=dni)
-                                    print('Compra satisfactoria de: ', atributos[0])
-                                    break
+                                    n = instancia1.comprar_libro(id_libro=atributos[7], precio=atributos[3], dni=dni)
+                                    if len(n) == 0:
+                                        print('Por favor registrese antes de agregar un libro o verifique que'
+                                              ' haya escrito bien su dni.')
+                                    else:
+                                        print('Compra satisfactoria de: ', atributos[0])
                                 else:
                                     instancia2 = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='',
                                                          dni='')
-                                    instancia2.comprar_libro(id_libro=atributos[4], precio=atributos[3], dni=dni)
-                                    print('Compra satisfactoria de: ', atributos[0])
-                                    break
+                                    n = instancia2.comprar_libro(id_libro=atributos[4], precio=atributos[3], dni=dni)
+                                    if len(n) == 0:
+                                        print('Por favor registrese antes de agregar un libro o verifique que'
+                                              ' haya escrito bien su dni.')
+                                    else:
+                                        print('Compra satisfactoria de: ', atributos[0])
                             except Exception as e:
                                 print('No se pudo realizar la compra.', 'Tipo de error', e)
-                                break
-                        break
                     if respuesta2 == '2':
-                        print('¿Quieres alquilar alguno de estos libros?')
-                        print('1- Si')
-                        print('2- No')
-                        alq = input('Respuesta: ')
+                        while True:
+                            print('¿Quieres alquilar alguno de estos libros?')
+                            print('1- Si')
+                            print('2- No')
+                            alq = input('Respuesta: ')
+                            if alq == '1' or alq == '2':
+                                break
                         if alq == '1':
                             nombre = input('Nombre: ')
                             apellido = input('Apellido: ')
                             numero = input('Numero telefonico: ')
                             mail = input('Mail: ')
                             dni = input('Dni: ')
-                            eleccion_a = input('¿Que libro queres?:   ')
-                            print('1- Confirmar eleccion')
-                            print('2- Cancelar')
-                            seguro = input('¿Estas seguro? ')
+                            eleccion_a = input('¿Que libro queres? (indique el numero):   ')
+                            while True:
+                                print('1- Confirmar eleccion')
+                                print('2- Cancelar')
+                                seguro = input('¿Estas seguro? ')
+                                if seguro == '1' or seguro == '2':
+                                    break
                             if seguro == '1':
                                 nueva_lista = []
                                 for lista in listas:
@@ -220,55 +262,68 @@ def interaccion_libros():
                                         nueva_lista.append(list)
                                 try:
                                     atributos = nueva_lista[int(eleccion_a) - 1]
-                                    print(atributos)
                                     if len(atributos) > 8:
                                         instancia = Cliente(Nombre=nombre, Apellido=apellido, contrasenia='',
                                                             numero=numero,
                                                             mail=mail,
                                                             dni=dni)
-                                        instancia.solicitud_prestamo(titulo_obra=atributos[0],
-                                                                     id_libro=atributos[7],
-                                                                     nombre=nombre,
-                                                                     apellido=apellido,
-                                                                     telefono=numero,
-                                                                     email=mail)
-                                        print('Envio de solictud exitoso de: ', atributos[0])
-                                        registrar_csv(movimiento='solicitud', nombre='', apellido='', contrasenia='',
-                                                      dni=dni,
-                                                      alquiler='')
-                                        break
+                                        n = instancia.solicitud_prestamo(titulo_obra=atributos[0],
+                                                                         id_libro=atributos[7],
+                                                                         nombre=nombre,
+                                                                         apellido=apellido,
+                                                                         telefono=numero,
+                                                                         email=mail)
+                                        if len(n) == 0:
+                                            print('Por favor registrese antes de agregar un libro o verifique que'
+                                                  ' haya escrito bien su dni.')
+                                        else:
+                                            print('Envio de solictud exitoso de: ', atributos[0],
+                                                  '. Se le brindara su contacto al dueño del libro para'
+                                                  ' que se contacte con usted.')
+                                            registrar_csv(movimiento='solicitud', nombre='', apellido='',
+                                                          contrasenia='',
+                                                          dni=dni,
+                                                          alquiler='')
                                     else:
                                         instancia = Cliente(Nombre=nombre, Apellido=apellido, contrasenia='',
                                                             numero=numero,
                                                             mail=mail,
                                                             dni=dni)
-                                        instancia.solicitud_prestamo(titulo_obra=atributos[0],
-                                                                     id_libro=atributos[4],
-                                                                     nombre=nombre,
-                                                                     apellido=apellido,
-                                                                     telefono=numero,
-                                                                     email=mail)
-                                        print('Envio de solictud exitoso de: ', atributos[0])
-                                        registrar_csv(movimiento='solicitud', nombre='', apellido='', contrasenia='',
-                                                      dni=dni,
-                                                      alquiler='')
-                                        break
-                                except:
-                                    continue
-                    break
+                                        n = instancia.solicitud_prestamo(titulo_obra=atributos[0],
+                                                                         id_libro=atributos[4],
+                                                                         nombre=nombre,
+                                                                         apellido=apellido,
+                                                                         telefono=numero,
+                                                                         email=mail)
+                                        if len(n) == 0:
+                                            print('Por favor registrese antes de agregar un libro o verifique que'
+                                                  ' haya escrito bien su dni.')
+                                        else:
+                                            print('Envio de solictud exitoso de: ', atributos[0],
+                                                  'Se le brindara su contacto al dueño dellibro para'
+                                                  ' que se contacte con usted.')
+                                            registrar_csv(movimiento='solicitud', nombre='', apellido='',
+                                                          contrasenia='',
+                                                          dni=dni,
+                                                          alquiler='')
+                                except Exception as e:
+                                    print('No se pudo enviar la solicitud, verifique que los datos esten bien.', e)
 
-                if consulta == '2':
-                    libro = Arreglador(listas)
-                    libros = libro.formato_dic_libros(cantidad_de_listas=2)
-                    if len(libros) == 0:
-                        print('No hay ningun libro disponible por el momento')
-                        break
+            if consulta == '2':
+                libro = Arreglador(listas)
+                libros = libro.formato_dic_libros(cantidad_de_listas=2)
+                if len(libros) == 0:
+                    print('No hay ningun libro disponible por el momento')
+                else:
                     libro_elegido = random.choice(libros)
                     print('Libro random: ', libro_elegido)
-                    print('¿Quieres comprar alguno de estos libros?')
-                    print('1- si')
-                    print('2- no')
-                    respuestad = input('Seleccion: ')
+                    while True:
+                        print('¿Quieres comprar alguno de estos libros?')
+                        print('1- si')
+                        print('2- no')
+                        respuestad = input('Seleccion: ')
+                        if respuestad == '1' or respuestad == '2':
+                            break
                     lista_nueva = []
                     for n in listas:
                         for i in n:
@@ -281,31 +336,43 @@ def interaccion_libros():
                             if len(atributos) > 8:
                                 instancia = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='',
                                                     dni=dni)
-                                instancia.comprar_libro(id_libro=atributos[7], precio=atributos[3], dni=dni)
-                                print('Compra satisfactoria de: ', atributos[0])
+                                n = instancia.comprar_libro(id_libro=atributos[7], precio=atributos[3], dni=dni)
+                                if len(n) == 0:
+                                    print('Por favor registrese antes de agregar un libro o verifique que'
+                                          ' haya escrito bien su dni.')
+                                else:
+                                    print('Compra satisfactoria de: ', atributos[0])
                             else:
                                 instancia = Cliente(Nombre='', Apellido='', contrasenia='', numero='', mail='',
                                                     dni=dni)
-                                instancia.comprar_libro(id_libro=atributos[4], precio=atributos[3], dni=dni)
-                                print('Compra satisfactoria de: ', atributos[0])
-                            break
+                                n = instancia.comprar_libro(id_libro=atributos[4], precio=atributos[3], dni=dni)
+                                if len(n) == 0:
+                                    print('Por favor registrese antes de agregar un libro o verifique que'
+                                          ' haya escrito bien su dni.')
+                                else:
+                                    print('Compra satisfactoria de: ', atributos[0])
                         except Exception as e:
-                            print('No se pudo realizar la compra.','Tipo de error', e)
-                            break
+                            print('No se pudo realizar la compra.', 'Tipo de error', e)
                     if respuestad == '2':
-                        print('¿Quieres alquilar alguno de estos libros?')
-                        print('1- Si')
-                        print('2- No')
-                        alq = input('Respuesta: ')
+                        while True:
+                            print('¿Quieres alquilar alguno de estos libros?')
+                            print('1- Si')
+                            print('2- No')
+                            alq = input('Respuesta: ')
+                            if alq == '1' or alq == '2':
+                                break
                         if alq == '1':
                             nombre = input('Nombre: ')
                             apellido = input('Apellido: ')
                             numero = input('Numero telefonico: ')
                             mail = input('Mail: ')
                             dni = input('Dni: ')
-                            print('1- Confirmar eleccion')
-                            print('2- Cancelar')
-                            seguro = input('¿Estas seguro? ')
+                            while True:
+                                print('1- Confirmar eleccion')
+                                print('2- Cancelar')
+                                seguro = input('¿Estas seguro? ')
+                                if seguro == '1' or seguro == '2':
+                                    break
                             if seguro == '1':
                                 nueva_lista = []
                                 for lista in listas:
@@ -319,56 +386,61 @@ def interaccion_libros():
                                                             numero=numero,
                                                             mail=mail,
                                                             dni=dni)
-                                        instancia.solicitud_prestamo(titulo_obra=atributos[0],
-                                                                     id_libro=atributos[7],
-                                                                     nombre=nombre,
-                                                                     apellido=apellido,
-                                                                     telefono=numero,
-                                                                     email=mail)
-                                        print('Envio de solictud exitoso de: ', atributos[0])
-                                        registrar_csv(movimiento='solicitud', nombre='', apellido='', contrasenia='',
-                                                      dni=dni,
-                                                      alquiler='')
-                                        break
+                                        n = instancia.solicitud_prestamo(titulo_obra=atributos[0],
+                                                                         id_libro=atributos[7],
+                                                                         nombre=nombre,
+                                                                         apellido=apellido,
+                                                                         telefono=numero,
+                                                                         email=mail)
+                                        if len(n) == 0:
+                                            print('Por favor registrese antes de agregar un libro')
+                                        else:
+                                            print('Envio de solictud exitoso de: ', atributos[0],
+                                                  '. Se le brindara su contacto al dueño del libro para'
+                                                  ' que se contacte con usted.')
+                                            registrar_csv(movimiento='solicitud', nombre='', apellido='',
+                                                          contrasenia='',
+                                                          dni=dni,
+                                                          alquiler='')
                                     else:
                                         instancia = Cliente(Nombre=nombre, Apellido=apellido, contrasenia='',
                                                             numero=numero,
                                                             mail=mail,
                                                             dni=dni)
-                                        instancia.solicitud_prestamo(titulo_obra=atributos[0],
-                                                                     id_libro=atributos[4],
-                                                                     nombre=nombre,
-                                                                     apellido=apellido,
-                                                                     telefono=numero,
-                                                                     email=mail)
-                                        print('Envio de solictud exitoso de: ', atributos[0])
-                                        registrar_csv(movimiento='solicitud', nombre='', apellido='', contrasenia='',
-                                                      dni=dni,
-                                                      alquiler='')
-                                        break
-                                except:
-                                    continue
-                    break
-                else:
-                    print('Elija un numero entre las opciones.')
-                break
-            break
+                                        n = instancia.solicitud_prestamo(titulo_obra=atributos[0],
+                                                                         id_libro=atributos[4],
+                                                                         nombre=nombre,
+                                                                         apellido=apellido,
+                                                                         telefono=numero,
+                                                                         email=mail)
+                                        if len(n) == 0:
+                                            print('Por favor registrese antes de agregar un libro o verifique que'
+                                                  ' haya escrito bien su dni.')
+                                        else:
+                                            print('Envio de solictud exitoso de: ', atributos[0],
+                                                  '. Se le brindara su contacto al dueño del libro para'
+                                                  ' que se contacte con usted.')
+                                            registrar_csv(movimiento='solicitud', nombre='', apellido='',
+                                                          contrasenia='',
+                                                          dni=dni,
+                                                          alquiler='')
+                                except Exception as e:
+                                    print('No se pudo enviar la solicitud, verifique que los datos esten bien.', e)
 
-        if consulta == '2':
+    if consulta == '2':
+        while True:
             print('Elija una de las siguientes opciones: ')
             print('1- Ficcion')
             print('2- No ficcion')
             respuesta = input('Opcion a elegir: ')
-            if respuesta == '1':
-                consulta_libros_nyt_fict(url='https://api.nytimes.com/svc/'
-                                             'books/v3/lists/current/hardcover-fiction.json')
+            if respuesta == '1' or respuesta == '2':
                 break
-            if respuesta == '2':
-                consulta_libros_nyt_nonfict(url='https://api.nytimes.com/svc/'
-                                                'books/v3/lists/current/paperback-nonfiction.json')
-                break
-        break
-
+        if respuesta == '1':
+            consulta_libros_nyt_fict(url='https://api.nytimes.com/svc/'
+                                         'books/v3/lists/current/hardcover-fiction.json')
+        if respuesta == '2':
+            consulta_libros_nyt_nonfict(url='https://api.nytimes.com/svc/'
+                                            'books/v3/lists/current/paperback-nonfiction.json')
 
 
 def registro_clientes():
@@ -408,10 +480,13 @@ def registro_clientes():
         print('Operacion exitosa')
 
     elif move == '3':
-        print('¿Que tipo de libro deseas insertar?')
-        print('1- Nuevo')
-        print('2- Usado')
-        opcion = input('Opcion a elegir: ')
+        while True:
+            print('¿Que tipo de libro deseas insertar?')
+            print('1- Nuevo')
+            print('2- Usado')
+            opcion = input('Opcion a elegir: ')
+            if opcion == '1' or opcion == '2':
+                break
         if opcion == '1':
             dni = input('Dni: ')
             titulo_obra = input('Titulo de la obra: ')
@@ -532,7 +607,7 @@ def manejo_de_foro():
 
 
 while True:
-    print('Bienvenido a la aplicacion SwapBooks, estamos muy contentos de que seas parte de nuestra comunidad.')
+    print('\nBienvenido a la aplicacion SwapBooks, estamos muy contentos de que seas parte de nuestra comunidad.')
     print('Seleccione una de las tres opciones:')
     print('1- Quiero conocer/comprar los libros.')
     print('2- Quiero modificar mis libros, registrarme o darme de baja.')
