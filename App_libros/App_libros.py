@@ -114,33 +114,38 @@ class Cliente:
         self.dni = dni
         self.precio = precio
         self.id_transaccion = None
-        conexion_ejecucion_sentencia(sentencia="INSERT INTO Ventas VALUES (?, ?, ?, ?)",
-                                     tupla=(self.id_transaccion, self.id_libro, self.precio, self.dni))
-        conexion_ejecucion_sentencia(sentencia="UPDATE Libros SET activo_inactivo_cliente = 'inactivo' "
+        cliente = conexion_ejecucion_sentencia(sentencia="SELECT * FROM Clientes WHERE Id_number = '" +
+                                                         self.dni + "'",
+                                               tipo_ejecucion='simple')
+        if len(cliente) != 0:
+            conexion_ejecucion_sentencia(sentencia="INSERT INTO Ventas VALUES (?, ?, ?, ?)",
+                                         tupla=(self.id_transaccion, self.id_libro, self.precio, self.dni))
+            conexion_ejecucion_sentencia(sentencia="UPDATE Libros SET activo_inactivo_cliente = 'inactivo' "
+                                         "WHERE Id_number_libros = '" + self.id_libro + "'",
+                                        tipo_ejecucion='simple')
+            conexion_ejecucion_sentencia(sentencia="UPDATE Libros_usados SET activo_inactivo_cliente = 'inactivo' "
                                                "WHERE Id_number_libros = '" + self.id_libro + "'",
-                                     tipo_ejecucion='simple')
-        conexion_ejecucion_sentencia(sentencia="UPDATE Libros_usados SET activo_inactivo_cliente = 'inactivo' "
-                                               "WHERE Id_number_libros = '" + self.id_libro + "'",
-                                     tipo_ejecucion='simple')
-        resultado = conexion_ejecucion_sentencia(sentencia="SELECT * FROM Libros WHERE Id_number_libros = '" +
+                                         tipo_ejecucion='simple')
+            resultado = conexion_ejecucion_sentencia(sentencia="SELECT * FROM Libros WHERE Id_number_libros = '" +
                                                            self.id_libro + "'", tipo_ejecucion='simple')
-        resultado2 = conexion_ejecucion_sentencia(sentencia="SELECT * FROM Libros_usados WHERE Id_number_libros = '" +
-                                                            self.id_libro + "'",
-                                                  tipo_ejecucion='simple')
-        id_cliente = 0
-        if len(resultado) != 0:
-            id_cliente = resultado[0]
-            id_cliente = id_cliente[5]
-        if len(resultado2) != 0:
-            id_cliente = resultado2[0]
-            id_cliente = id_cliente[4]
-        client = conexion_ejecucion_sentencia(sentencia="SELECT * FROM Clientes WHERE Id_number = '" +
-                                                        str(id_cliente) + "'", tipo_ejecucion='simple')
-        mail = client[0]
-        email = mail[5]
-        mensaje = "<POR FAVOR NO CONTESTAR ESTE CORREO>\n\nBuenos dias, nos comunicamos para informarte que vendiste" \
-                  " tu libro con id: {}".format(self.id_libro)
-        enviar_mail(mensaje=mensaje, receptor=email)
+            resultado2 = conexion_ejecucion_sentencia(sentencia="SELECT * FROM Libros_usados WHERE Id_number_libros = '"
+                                                                + self.id_libro + "'",
+                                                      tipo_ejecucion='simple')
+            id_cliente = 0
+            if len(resultado) != 0:
+                id_cliente = resultado[0]
+                id_cliente = id_cliente[5]
+            if len(resultado2) != 0:
+                id_cliente = resultado2[0]
+                id_cliente = id_cliente[4]
+            client = conexion_ejecucion_sentencia(sentencia="SELECT * FROM Clientes WHERE Id_number = '" +
+                                                            str(id_cliente) + "'", tipo_ejecucion='simple')
+            mail = client[0]
+            email = mail[5]
+            mensaje = "<POR FAVOR NO CONTESTAR ESTE CORREO>\n\nBuenos dias, nos comunicamos para informarte que vendiste" \
+                      " tu libro con id: {}".format(self.id_libro)
+            enviar_mail(mensaje=mensaje, receptor=email)
+        return cliente
 
     def crear_recomendacion(self, titulo_obra, puntaje, recomendacion, nombre, apellido):
         self.titulo_obra = titulo_obra
@@ -162,9 +167,14 @@ class Cliente:
         self.apellido = apellido
         self.telefono = telefono
         self.email = email
-        conexion_ejecucion_sentencia(sentencia="INSERT INTO Solicitudes_prestamos VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                                     tupla=(self.id_solicitud, self.fecha, self.titulo_obra, self.id_libro, self.nombre,
-                                            self.apellido, self.telefono, self.email))
+        cliente = conexion_ejecucion_sentencia(sentencia="SELECT * FROM Clientes WHERE Id_number = '" +
+                                                         self.id_number + "'",
+                                               tipo_ejecucion='simple')
+        if len(cliente) != 0:
+            conexion_ejecucion_sentencia(sentencia="INSERT INTO Solicitudes_prestamos VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                                         tupla=(self.id_solicitud, self.fecha, self.titulo_obra, self.id_libro, self.nombre,
+                                                self.apellido, self.telefono, self.email))
+        return cliente
 
     def modificar_datos_cliente(self, columna, dato):
         conexion_ejecucion_sentencia(sentencia="UPDATE Clientes SET " + columna + "=" + "'" + dato + "'"
@@ -208,8 +218,8 @@ class Libros:
         return cliente
 
     def desactivar_libros(self, id_number_libro):
-        self.id_number = id_number_libro
-        conexion_ejecucion_sentencia(sentencia="UPDATE Libros_usados SET activo_inactivo_cliente = 'inactivo' "
+        self.id_number = str(id_number_libro)
+        conexion_ejecucion_sentencia(sentencia="UPDATE Libros SET activo_inactivo_cliente = 'inactivo' "
                                                "WHERE Id_number_libros = '" + self.id_number + "'",
                                      tipo_ejecucion='simple')
 
@@ -249,7 +259,7 @@ class Libros_usados(Libros):
         return cliente
 
     def desactivar_libros(self, id_number_libro):
-        self.id_number = id_number_libro
+        self.id_number = str(id_number_libro)
         conexion_ejecucion_sentencia(sentencia="UPDATE Libros_usados SET activo_inactivo_cliente = 'inactivo' "
                                                "WHERE Id_number_libros = '" + self.id_number + "'",
                                      tipo_ejecucion='simple')
