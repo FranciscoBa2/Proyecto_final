@@ -1,7 +1,5 @@
-
 from flask import Flask, jsonify
-from App_libros import conexion_ejecucion_sentencia
-from App_libros import Arreglador
+from App_libros import conexion_ejecucion_sentencia, Arreglador
 
 
 
@@ -75,5 +73,5 @@ if __name__ == '__main__':
 
 
 
-## quier consultar que libros tengo.
+## quiero consultar que libros tengo.
 ##la api te dice en que estado se encuentra el libro/cliente.
