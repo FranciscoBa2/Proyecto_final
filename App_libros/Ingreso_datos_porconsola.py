@@ -1,11 +1,5 @@
-from App_libros import Libros
-from App_libros import Cliente
-from App_libros import Libros_usados
-from Conexion_con_api import consulta_libros_nyt_fict
-from Conexion_con_api import consulta_libros_nyt_nonfict
-from App_libros import Arreglador
-from App_libros import conexion_ejecucion_sentencia
-from App_libros import registrar_csv
+from App_libros import Libros, Cliente, Libros_usados, Arreglador, conexion_ejecucion_sentencia, registrar_csv
+from Conexion_con_api import consulta_libros_nyt_fict, consulta_libros_nyt_nonfict
 import random
 
 
@@ -438,13 +432,18 @@ def registro_clientes():
         nombre = input('Nombre: ')
         apellido = input('Apellido: ')
         contrasenia = input('Contraseña: ')
-        dni = input('Ingrese su dni:')
+        while True:
+            dni = input('Ingrese su dni:')
+            if len(dni) >= 6:
+                break
+            else:
+                print('Ingrese un dni valido')
         numero = input('Ingrese su numero: ')
         mail = input('Ingrese su mail: ')
 
         cliente_nuevo = Cliente(nombre=nombre, apellido=apellido, contrasenia=contrasenia,
                                 telefono=numero, mail=mail, dni=dni)
-        cliente_nuevo.agregar_clientes()
+        cliente_nuevo.agregar_clientes(contrasenia=cliente_nuevo.get_contrasenia())
         registrar_csv(movimiento='insercion', nombre=nombre, apellido=apellido, contrasenia=contrasenia,
                       dni=dni, alquiler='')
 
