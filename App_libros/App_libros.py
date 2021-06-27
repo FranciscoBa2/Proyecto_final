@@ -1,12 +1,14 @@
 import sqlite3
-from datetime import datetime
+from datetime import datetime, date
 import random
 import csv
-from Script_automatizado import enviar_mail
+import smtplib
 
 ruta_base_datos = 'Applibros.db'
 
 ruta_csv = 'app.libros.csv'
+
+# estas tres fucniones anteriores a las clases simplifican el codigo.
 
 
 def registrar_csv(movimiento, nombre, apellido, contrasenia, dni, alquiler):
@@ -17,6 +19,7 @@ def registrar_csv(movimiento, nombre, apellido, contrasenia, dni, alquiler):
             'movimiento': movimiento, 'fecha': datetime.now(), 'nombre': nombre, 'apellido': apellido,
             'contrasenia': contrasenia, 'id': dni, 'alquiler': alquiler
         })
+
 
 def conexion_ejecucion_sentencia(sentencia, tipo_ejecucion='', tupla=None):
     conexion = sqlite3.connect(ruta_base_datos)
@@ -31,6 +34,20 @@ def conexion_ejecucion_sentencia(sentencia, tipo_ejecucion='', tupla=None):
     return material
 
 
+def enviar_mail(mensaje, receptor):
+    usuario = 'f.caprarulo@wellspring.edu.ar'
+    contrasenia = 'capra123'
+    subject = 'Venta de libro'
+    mensaje = 'Subject: {}\n\n{}'.format(subject, mensaje)
+    server = smtplib.SMTP('smtp.gmail.com:587')
+    server.starttls()
+    server.login(usuario, contrasenia)
+
+    server.sendmail(usuario, receptor, mensaje)
+
+    server.quit()
+
+
 # def eliminar_registros_para_prueba():
 #     conexion_ejecucion_sentencia(sentencia="DELETE from Clientes WHERE (lo que se necesite)",
 #     tipo_ejecucion='simple', tupla=None)
@@ -42,14 +59,15 @@ def conexion_ejecucion_sentencia(sentencia, tipo_ejecucion='', tupla=None):
 
 class Cliente:
 
-    def __init__(self, Nombre, Apellido, contrasenia, numero, mail, dni):
-        self.Nombre = Nombre
-        self.Apellido = Apellido
+    def __init__(self, nombre, apellido, contrasenia, telefono, mail, dni):
+        self.nombre = nombre
+        self.apellido = apellido
         self.contrasenia = contrasenia
-        self.numero = numero
+        self.telefono = telefono
         self.mail = mail
         self.id_number = dni
         self.act = 'activo'
+        self.lista = []
 
     def agregar_clientes(self):
 
@@ -58,15 +76,15 @@ class Cliente:
         try:
             if len(cliente) == 0:
                 conexion_ejecucion_sentencia(sentencia="INSERT INTO Clientes VALUES (?, ?, ?, ?, ?, ?, ?)",
-                                            tupla=(self.Nombre, self.Apellido, self.contrasenia, self.id_number,
-                                                    self.numero, self.mail, self.act))
-                print('Registro exitoso!', 'Bienvenido a nuestra comunidad ', self.Nombre, self.Apellido)
+                                             tupla=(self.nombre, self.apellido, self.contrasenia, self.id_number,
+                                                    self.telefono, self.mail, self.act))
+                print('Registro exitoso!', 'Bienvenido a nuestra comunidad ', self.nombre, self.apellido)
             else:
                 cliente = conexion_ejecucion_sentencia(sentencia="UPDATE Clientes SET 'activo_inactivo' = 'activo'"
                                                        " WHERE id_number = '" + self.id_number + "'",
                                                        tipo_ejecucion='simple')
                 if len(cliente) > 0:
-                    print('Registro exitoso!', 'Bienvenido a nuestra comunidad ', self.Nombre, self.Apellido)
+                    print('Registro exitoso!', 'Bienvenido a nuestra comunidad ', self.nombre, self.apellido)
                 else:
                     print('Ya se encuentra activo como cliente')
         except Exception as e:
@@ -81,22 +99,20 @@ class Cliente:
                                                "id_number_clientes = '" + self.id_number + "'", tipo_ejecucion='simple')
 
     def consulta_libro(self, titulo_obra):
-        self.titulo_obra = titulo_obra
-        self.lista_libros = []
         resultado = conexion_ejecucion_sentencia(sentencia="SELECT * FROM Libros WHERE Titulo_obra " + "LIKE '%" +
-                                                   self.titulo_obra + "%' AND activo_inactivo_cliente = 'activo'",
+                                                 titulo_obra + "%' AND activo_inactivo_cliente = 'activo'",
                                                  tipo_ejecucion='simple')
         resultado2 = conexion_ejecucion_sentencia(sentencia="SELECT * FROM Libros_usados WHERE Titulo_obra " + "LIKE '%"
-                                                            + self.titulo_obra + "%'", tipo_ejecucion='simple')
+                                                            + titulo_obra + "%'", tipo_ejecucion='simple')
         if len(resultado) > 0:
-            self.lista_libros.append(resultado)
+            self.lista.append(resultado)
         else:
-            self.lista_libros.append([])
+            self.lista.append([])
         if len(resultado2) > 0:
-            self.lista_libros.append(resultado2)
+            self.lista.append(resultado2)
         else:
-            self.lista_libros.append([])
-        return self.lista_libros
+            self.lista.append([])
+        return self.lista
 
     def consulta_de_libros(self):
         self.lista = []
@@ -108,28 +124,27 @@ class Cliente:
         self.lista.append(resultado2)
         return self.lista
 
-    def comprar_libro(self, id_libro, precio, dni):
+    def comprar_libro(self, id_libro, precio):
 
-        self.id_libro = str(id_libro)
-        self.dni = dni
-        self.precio = precio
-        self.id_transaccion = None
+        id_libro = str(id_libro)
+        id_transaccion = None
         cliente = conexion_ejecucion_sentencia(sentencia="SELECT * FROM Clientes WHERE Id_number = '" +
-                                                         self.dni + "'",
+                                                         self.id_number + "'",
                                                tipo_ejecucion='simple')
+        fecha = date.today()
         if len(cliente) != 0:
-            conexion_ejecucion_sentencia(sentencia="INSERT INTO Ventas VALUES (?, ?, ?, ?)",
-                                         tupla=(self.id_transaccion, self.id_libro, self.precio, self.dni))
+            conexion_ejecucion_sentencia(sentencia="INSERT INTO Ventas VALUES (?, ?, ?, ?, ?)",
+                                         tupla=(id_transaccion, id_libro, precio, self.id_number, fecha))
             conexion_ejecucion_sentencia(sentencia="UPDATE Libros SET activo_inactivo_cliente = 'inactivo' "
-                                         "WHERE Id_number_libros = '" + self.id_libro + "'",
+                                         "WHERE Id_number_libros = '" + id_libro + "'",
                                         tipo_ejecucion='simple')
             conexion_ejecucion_sentencia(sentencia="UPDATE Libros_usados SET activo_inactivo_cliente = 'inactivo' "
-                                               "WHERE Id_number_libros = '" + self.id_libro + "'",
+                                                   "WHERE Id_number_libros = '" + id_libro + "'",
                                          tipo_ejecucion='simple')
             resultado = conexion_ejecucion_sentencia(sentencia="SELECT * FROM Libros WHERE Id_number_libros = '" +
-                                                           self.id_libro + "'", tipo_ejecucion='simple')
+                                                               id_libro + "'", tipo_ejecucion='simple')
             resultado2 = conexion_ejecucion_sentencia(sentencia="SELECT * FROM Libros_usados WHERE Id_number_libros = '"
-                                                                + self.id_libro + "'",
+                                                                + id_libro + "'",
                                                       tipo_ejecucion='simple')
             id_cliente = 0
             if len(resultado) != 0:
@@ -142,44 +157,36 @@ class Cliente:
                                                             str(id_cliente) + "'", tipo_ejecucion='simple')
             mail = client[0]
             email = mail[5]
-            mensaje = "<POR FAVOR NO CONTESTAR ESTE CORREO>\n\nBuenos dias, nos comunicamos para informarte que vendiste" \
-                      " tu libro con id: {}".format(self.id_libro)
+            mensaje = "<POR FAVOR NO CONTESTAR ESTE CORREO>\n\nBuenos dias, nos comunicamos para informarte" \
+                      " que vendiste tu libro con id: {}".format(id_libro)
             enviar_mail(mensaje=mensaje, receptor=email)
         return cliente
 
-    def crear_recomendacion(self, titulo_obra, puntaje, recomendacion, nombre, apellido):
-        self.titulo_obra = titulo_obra
-        self.puntaje = puntaje
-        self.recomendacion = recomendacion
-        self.nombre = nombre
-        self.apellido = apellido
-        self.id = None
+    def crear_recomendacion(self, titulo_obra, puntaje, recomendacion):
+        id_ = None
         conexion_ejecucion_sentencia(sentencia="INSERT INTO Foro VALUES (?, ?, ?, ?, ?, ?)",
-                                     tupla=(self.id, self.titulo_obra, self.puntaje, self.recomendacion, self.nombre,
+                                     tupla=(id_, titulo_obra, puntaje, recomendacion, self.nombre,
                                             self.apellido))
 
-    def solicitud_prestamo(self, titulo_obra, id_libro, nombre, apellido, telefono, email):
-        self.id_solicitud = None
-        self.fecha = datetime.now()
-        self.id_libro = id_libro
-        self.titulo_obra = titulo_obra
-        self.nombre = nombre
-        self.apellido = apellido
-        self.telefono = telefono
-        self.email = email
+    def solicitud_prestamo(self, titulo_obra, id_libro):
+        id_solicitud = None
+        fecha = datetime.now()
+        id_libro = id_libro
+        titulo_obra = titulo_obra
         cliente = conexion_ejecucion_sentencia(sentencia="SELECT * FROM Clientes WHERE Id_number = '" +
                                                          self.id_number + "'",
                                                tipo_ejecucion='simple')
         if len(cliente) != 0:
             conexion_ejecucion_sentencia(sentencia="INSERT INTO Solicitudes_prestamos VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                                         tupla=(self.id_solicitud, self.fecha, self.titulo_obra, self.id_libro, self.nombre,
-                                                self.apellido, self.telefono, self.email))
+                                         tupla=(id_solicitud, fecha, titulo_obra, id_libro, self.nombre,
+                                                self.apellido, self.telefono, self.mail))
         return cliente
 
     def modificar_datos_cliente(self, columna, dato):
         conexion_ejecucion_sentencia(sentencia="UPDATE Clientes SET " + columna + "=" + "'" + dato + "'"
                                                "WHERE Id_number = '" + self.id_number + "'",
                                      tipo_ejecucion='simple')
+
 
 class Libros:
     
@@ -205,13 +212,13 @@ class Libros:
                                                tipo_ejecucion='simple')
         if len(cliente) != 0:
 
-            Libro = conexion_ejecucion_sentencia(sentencia="SELECT * FROM Libros WHERE Titulo_obra = '" +
+            libro = conexion_ejecucion_sentencia(sentencia="SELECT * FROM Libros WHERE Titulo_obra = '" +
                                                            self.titulo_obra + "' AND Id_number_clientes = '" +
                                                            self.id_number + "'", tipo_ejecucion='simple')
-            Libro2 = conexion_ejecucion_sentencia(sentencia="SELECT * FROM Libros_usados WHERE Titulo_obra = '" +
+            libro2 = conexion_ejecucion_sentencia(sentencia="SELECT * FROM Libros_usados WHERE Titulo_obra = '" +
                                                            self.titulo_obra + "' AND Id_number_clientes = '" +
                                                            self.id_number + "'", tipo_ejecucion='simple')
-            if len(Libro) == 0 and len(Libro2) == 0:
+            if len(libro) == 0 and len(libro2) == 0:
                 conexion_ejecucion_sentencia(sentencia="INSERT INTO Libros VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                                              tupla=(self.titulo_obra, self.genero, self.paginas, self.precio,
                                                     self.id_libro, self.id_number, self.act, self.alquiler))
