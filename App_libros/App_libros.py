@@ -35,8 +35,8 @@ def conexion_ejecucion_sentencia(sentencia, tipo_ejecucion='', tupla=None):
 
 
 def enviar_mail(mensaje, receptor):
-    usuario = 'f.caprarulo@wellspring.edu.ar'
-    contrasenia = 'capra123'
+    usuario = 'introduzca su mail'
+    contrasenia = 'introduzca su contrasenia'
     subject = 'Venta de libro'
     mensaje = 'Subject: {}\n\n{}'.format(subject, mensaje)
     server = smtplib.SMTP('smtp.gmail.com:587')
@@ -62,21 +62,25 @@ class Cliente:
     def __init__(self, nombre, apellido, contrasenia, telefono, mail, dni):
         self.nombre = nombre
         self.apellido = apellido
-        self.contrasenia = contrasenia
+        self.__contrasenia = contrasenia
         self.telefono = telefono
         self.mail = mail
         self.id_number = dni
         self.act = 'activo'
         self.lista = []
 
-    def agregar_clientes(self):
+    def get_contrasenia(self):
+        return self.__contrasenia
+
+    def agregar_clientes(self, contrasenia):
 
         cliente = conexion_ejecucion_sentencia(sentencia="SELECT * FROM Clientes WHERE id_number = '" +
                                                          self.id_number + "'", tipo_ejecucion='simple')
         try:
             if len(cliente) == 0:
                 conexion_ejecucion_sentencia(sentencia="INSERT INTO Clientes VALUES (?, ?, ?, ?, ?, ?, ?)",
-                                             tupla=(self.nombre, self.apellido, self.contrasenia, self.id_number,
+                                             tupla=(self.nombre, self.apellido,
+                                                    contrasenia, self.id_number,
                                                     self.telefono, self.mail, self.act))
                 print('Registro exitoso!', 'Bienvenido a nuestra comunidad ', self.nombre, self.apellido)
             else:
@@ -159,7 +163,7 @@ class Cliente:
             email = mail[5]
             mensaje = "<POR FAVOR NO CONTESTAR ESTE CORREO>\n\nBuenos dias, nos comunicamos para informarte" \
                       " que vendiste tu libro con id: {}".format(id_libro)
-            enviar_mail(mensaje=mensaje, receptor=email)
+            # enviar_mail(mensaje=mensaje, receptor=email)
         return cliente
 
     def crear_recomendacion(self, titulo_obra, puntaje, recomendacion):
