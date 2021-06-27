@@ -10,48 +10,31 @@ import matplotlib.pyplot as plt
 ## si se da la coincidencia de que los mas vendidos tienen el mismo genero comprar mas de ese genero
 ##hacer un grafico del genero mas vendido
 
-data = {"nombre": ["Las venas abiertas de America Latina",
-                            "Los siete maridos de Evelin Hugo",
-                            "la bailarina de Auschwitz", "Rayuela",
-                            "El principito",  "Cuando aprendas a amar",
-                            "Civilizacion y barbarie", "El ninio de pijamas rayas"],
-        "precio": [5000, 7000, 9000, 6000, 3000, 5000, 7800, 9000],
-        "genero": ["Historia", "Romance", "Ficcion historica", "Ficcion historica",
-                   "Fantasia", "Romance", "Historia", "Ficcion Historica"],
-        "puntaje": [8, 10, 5, 10, 7, 9, 4, 9],
-        "ventas_por_mes": [40, 80, 20, 55, 37, 20, 17, 70]}
-
 
 import sqlite3
 
+## queremos ver cuantos libros hay en el foro con putnaje 10
 conn = sqlite3.connect('Applibros.db')
 
 frame = pd.read_sql('SELECT * FROM Foro', conn)
 print(frame)
+conn.close()
+maximo_puntaje = frame["Puntaje(1-10)"].max()
+print(maximo_puntaje)
 
-### print(data)
-frame = pd.DataFrame(data, index= [1, 2, 3, 4, 5, 6, 7, 8])
-frame.index.name = "id"
-frame.columns.name = 'item'
-print(frame)
-##print(frame.describe())
-##print(frame.dtypes)
+libros_con_mejor_puntaje = frame["Nombre"].loc[(frame["Puntaje(1-10)"] == 10)]
+print(libros_con_mejor_puntaje)
 
 
-ventas = data["ventas_por_mes"]
-genero = data["genero"]
-ven_gen = pd.DataFrame({"ventas" : ventas,
-"genero": genero})
-frame2 = pd.DataFrame(data, columns=["nombre", "precio"])
-#rint(frame2)
+## queremos analizar cuantas ventas se registraron por dia para poder tomar una decision de negocio.
 
-## print(ven_gen.plot.bar(rot=0))
+conn = sqlite3.connect('Applibros.db')
 
-maximo_puntaje = frame["puntaje"].max()
-##print(maximo_puntaje)
+frame1 = pd.read_sql('SELECT * FROM Ventas', conn)
+frame2 = frame1.drop(columns=['Id_libro', 'Dni_comprador', 'Precio'])
+cantidad_de_ventas_por_fecha = frame2.groupby(frame2['fecha']).count()
+cantidad_de_ventas_por_fecha.rename(columns={'id_transaccion':'cantidad_ventas'}, inplace=True)
+print(cantidad_de_ventas_por_fecha)
 
-p = frame["nombre"].loc[(frame["puntaje"] == 10)]
-print(p)
-
-minimo_de_ventas = frame["ventas_por_mes"].min()
-print(minimo_de_ventas)
+cantidad_de_ventas_por_fecha.plot()
+plt.show()
