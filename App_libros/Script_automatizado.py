@@ -1,48 +1,31 @@
-import sys
-
-# la idea seria que a partir del csv donde se registran todos los movimientos te haga un resumen diario de la cantidad de inserciones, bajas y ventas.
-
-
-## para resolver el tema de los prestamos que haya una tabla mas para las solicitudes de alquiler/prestamo. Que te envie un mail automatico que tambien le brinde los datos al vendedor para ponerse en contacto.
+# import sys
+# from App_libros import Cliente
+# from App_libros import Arreglador
 
 #
-# import datetime
-#
-# now = datetime.datetime.now()
-# conexion =
-#
-# from io import open
-#
-# archivo = open('app.libros.csv')
-#
-# lineas = archivo.readlines()
-#
-# x = []
-# for n in lineas:
-#     n = n[:-1]
-#     linea = n.split(',')
-#     # l = (linea[0], linea[1], linea[2], linea[3], linea[4], linea[5])
-#     x.append(linea)
-#
-
-# archivo.close()
-# del (archivo)
-# print(x[1:])
+# argv = sys.argv
+# if len(argv) == 1:
+#     print('introduce el nombre del libro por favor')
+# else:
+#     info = Cliente(nombre='', apellido='', contrasenia='', telefono='', mail='', dni='')
+#     listas = info.consulta_libro(argv[1])
+#     lista_nueva = []
+#     for n in listas:
+#         if len(n) > 0:
+#             lista_nueva.append(n)
+#     if len(lista_nueva) > 0:
+#         list_format = Arreglador(lista_nueva)
+#         list_format = list_format.formato_dic_libros(cantidad_de_listas=0)
+#         n = 0
+#         for i in list_format:
+#             n = n + 1
+#             print('\nLibro', n, i)
+#         if len(list_format) == 0:
+#             print('No encontramos el libro')
 
 
-import smtplib
-from decouple import config
 
-def enviar_mail(mensaje, receptor):
-    usuario = 'f.caprarulo@wellspring.edu.ar'
-    contrasenia = 'capra123'
-    subject = 'Venta de libro'
-    mensaje = 'Subject: {}\n\n{}'.format(subject, mensaje)
-    server = smtplib.SMTP('smtp.gmail.com:587')
-    server.starttls()
-    server.login(usuario, contrasenia)
 
-    server.sendmail(usuario, receptor, mensaje)
 
-    server.quit()
+
 
